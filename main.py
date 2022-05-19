@@ -8,4 +8,5 @@ def main():
     window.configure(bg='LightSkyBlue1')
 
     #수정이 됐나?
+    window.mainloop()
 main()
