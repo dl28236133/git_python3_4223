@@ -7,5 +7,5 @@ def main():
     window.geometry('800x600')
     window.configure(bg='LightSkyBlue1')
 
-
+    #수정이 됐나?
 main()
