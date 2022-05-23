@@ -1,29 +1,23 @@
 from tkinter import *
 from tkinter import messagebox
-import tkinter.ttk as ttk
-
 
 #-- 대여시작
 def clickSearch():
     messagebox.showinfo("검색", "검색합니다.")
 
-
 def clickNext():
     messagebox.showinfo("다음", "다음으로 넘어갑니다.")
-
 
 def clickRent():
     messagebox.showinfo("대여", "도서를 대여합니다.")
 
-
 def clickReturn():
     messagebox.showinfo("반납", "도서를 반납합니다.")
-
 
 def clickRentUser():
     # 회원검색 창 생성
     windowRentUser   = Tk()
-    windowRentUser  .title('회원검색')
+    windowRentUser  .title('도서대여(회원검색)')
     windowRentUser  .geometry('600x400')
     windowRentUser  .configure(bg='LightSkyBlue1')
 
@@ -59,11 +53,9 @@ def clickRentUser():
         result.pack(side='left', padx=30)
 
     resultbox.place(x=25, y=172)
-    buttonNext = Button(windowRentUser , text="다음", command=clickReturnBook)
+    buttonNext = Button(windowRentUser , text="다음", command=clickRentBook)
     buttonNext.pack()
     buttonNext.place(x=490, y=300)
-
-
 
 def clickRentBook():
     windowRentBook = Tk()
@@ -134,12 +126,10 @@ def clickRentBook():
     buttonRent.pack()
     buttonRent.place(x=750, y=300)
 
-
-
 def clickReturnUser():
     # 회원검색 창 생성
     windowReturnUser  = Tk()
-    windowReturnUser .title('회원검색')
+    windowReturnUser .title('도서반납(회원검색)')
     windowReturnUser .geometry('600x400')
     windowReturnUser .configure(bg='LightSkyBlue1')
 
@@ -199,55 +189,45 @@ def clickReturnBook():
 
     resultbox.place(x=25, y=120)
 
-    labelPhoto = Label(windowReturnBook, text="사진",  \
-                       width=15)
+    labelPhoto = Label(windowReturnBook, text="사진",  width=15)
     labelPhoto.pack()
     labelPhoto.place(x=25, y=100)
 
-    labelISBN = Label(windowReturnBook, text="ISBN",  \
-                      width=15)
+    labelISBN = Label(windowReturnBook, text="ISBN", width=15)
     labelISBN.pack()
     labelISBN.place(x=125, y=100)
 
-    labelBookNameb = Label(windowReturnBook, text="도서명",  \
-                           width=15)
+    labelBookNameb = Label(windowReturnBook, text="도서명",  width=15)
     labelBookNameb.pack()
     labelBookNameb.place(x=225, y=100)
 
-    labelWriterNameb = Label(windowReturnBook, text="저자",  \
-                             width=15)
+    labelWriterNameb = Label(windowReturnBook, text="저자",  width=15)
     labelWriterNameb.pack()
     labelWriterNameb.place(x=325, y=100)
 
-    labelPUB = Label(windowReturnBook, text="출판사",  \
-                             width=15)
+    labelPUB = Label(windowReturnBook, text="출판사",  width=15)
     labelPUB.pack()
     labelPUB.place(x=425, y=100)
 
-    labelPrice = Label(windowReturnBook, text="가격",  \
-                       width=15)
+    labelPrice = Label(windowReturnBook, text="가격", width=15)
     labelPrice.pack()
     labelPrice.place(x=525, y=100)
 
-    labelURL = Label(windowReturnBook, text="URL",  \
-                     width=10)
+    labelURL = Label(windowReturnBook, text="URL", width=10)
     labelURL.pack()
     labelURL.place(x=625, y=100)
 
-    labelCan = Label(windowReturnBook, text="대여여부",  \
-                     width=15)
+    labelCan = Label(windowReturnBook, text="대여여부", width=15)
     labelCan.pack()
     labelCan.place(x=700, y=100)
 
     buttonReturn = Button(windowReturnBook, text="반납", command=clickReturn)
     buttonReturn.pack()
     buttonReturn.place(x=750, y=300)
-
-
 #-- 대여끝
 
 
-#-- 회원시작
+#--회원시작
 
 # 회원정보 - 회원검색창
 def member_search():
@@ -290,16 +270,13 @@ def member_search():
 
     resultbox.place(x=25, y=172)
 
-
 # 회원검색 - 검색 버튼 클릭 시
 def search_btn():
     messagebox.showinfo("검색실행", "회원 검색을 실행함")
 
-
 # 회원정보 리스트박스 회원 더블클릭시 이벤트
 def member_info_dbclick(event):
     member_info()
-
 
 # 회원검색 - 회원 선택 시 회원정보 창 출력
 def member_info():
@@ -344,7 +321,6 @@ def member_info():
 
     # 창 닫기 버튼 위치 지정
     infoclosebutton.place(x=440, y=250)
-
 
 # 회원등록
 def member_register():
@@ -404,16 +380,13 @@ def member_register():
     regibutton.place(x=160, y=260)
     regicanclebutton.place(x=220, y=260)
 
-
 # 회원등록 - 파일찾기 버튼 클릭 시
 def image_btn():
     messagebox.showinfo("이미지 찾기", "탐색기로 이미지 파일 찾기")
 
-
 # 회원등록 - 등록 버튼 클릭 시
 def regi_btn():
     messagebox.showinfo("회원등록", "회원등록 기능")
-
 
 # 회원정보수정 - 회원검색 창
 def member_search_fix():
@@ -456,16 +429,13 @@ def member_search_fix():
 
     resultbox.place(x=25, y=172)
 
-
 # 회원정보수정 - 회원검색 - 검색 버튼 클릭
 def search_fix_btn():
     messagebox.showinfo("검색실행", "회원 검색을 실행함")
 
-
 # 회원정보수정 - 회원정보 리스트박스 회원 더블클릭시 이벤트
 def member_info_fix_dbclick(event):
     member_info_fix()
-
 
 # 회원정보수정 - 회원검색 - 회원정보(수정 버튼 존재)
 def member_info_fix():
@@ -527,16 +497,13 @@ def member_info_fix():
     infofixbutton.place(x=390, y=250)
     photofixbutton.place(x=55, y=220)
 
-
 # 회원정보수정 - 회원검색 - 회원정보 - 수정 버튼 클릭
 def info_fix_btn():
     messagebox.showinfo("회원정보수정", "회원정보수정 기능")
 
-
 # 회원정보수정 - 회원검색 - 회원정보 - 이미지 변경 버튼 클릭
 def photo_fix_btn():
     messagebox.showinfo("이미지 변경", "회원정보수정 - 이미지 변경")
-
 
 # 회원탈퇴 - 회원검색 창
 def member_search_del():
@@ -579,16 +546,13 @@ def member_search_del():
 
     resultbox.place(x=25, y=172)
 
-
 # 회원탈퇴 - 회원검색 - 검색 버튼 클릭
 def search_del_btn():
     messagebox.showinfo("검색실행", "회원 검색을 실행함")
 
-
 # 회원탈퇴 - 회원정보 리스트박스 회원 더블클릭시 이벤트
 def member_info_del_dbclick(event):
     member_info_del()
-
 
 # 회원탈퇴 - 회원검색 - 회원정보(회원탈퇴 버튼 존재)
 def member_info_del():
@@ -636,11 +600,9 @@ def member_info_del():
     infoclosebutton.place(x=440, y=250)
     infodelbutton.place(x=370, y=250)
 
-
 # 회원탈퇴 - 회원검색 - 회원정보 - 회원탈퇴 버튼 클릭
 def info_del_btn():
     messagebox.showinfo("회원탈퇴", "회원탈퇴 기능")
-
 
 # 탈퇴회원검색
 def deleted_member_search():
@@ -683,16 +645,13 @@ def deleted_member_search():
 
     resultbox.place(x=25, y=172)
 
-
 # 탈퇴회원검색 - 검색 버튼 클릭 시
 def deleted_search_btn():
     messagebox.showinfo("검색실행", "회원 검색을 실행함")
 
-
 # 탈퇴회원검색 - 회원정보 리스트박스 회원 더블클릭시 이벤트
 def deleted_member_info_dbclick(event):
     deleted_member_info()
-
 
 # 탈퇴회원검색 - 회원 선택 시 회원정보 창 출력
 def deleted_member_info():
@@ -746,31 +705,28 @@ def deleted_member_info():
 def clickSearch():
     messagebox.showinfo("검색", "검색합니다.")
 
-
 def find_book():
     messagebox.showinfo("중복", "검색합니다.")
-
 
 def find_book2():
     messagebox.showinfo("이미지", "찾기")
 
+def add_book():
+    messagebox.showinfo("추가", "추가")
 
 def photo_fix_btn():
-    messagebox.showinfo("이미지변경", "변경완료")
-
+    messagebox.showinfo("이미지변경", "파일 탐색기 실행")
 
 def fix_btn():
     messagebox.showinfo("수정", "수정완료")
 
-
 def fix2_btn():
     messagebox.showinfo("삭제", "삭제완료")
-
 
 # 새 책 추가
 def Book_add():
     newWindow = Tk()
-    newWindow.title('새 책 추가')
+    newWindow.title('새 도서 추가')
     newWindow.geometry('450x250')
     newWindow.configure(bg='LightSkyBlue1')
 
@@ -786,6 +742,7 @@ def Book_add():
     Label(newWindow, text='도서 사진 : ', bg='LightSkyBlue1').place(x=20, y=190)
     Label(newWindow, text='도서 설명 : ', bg='LightSkyBlue1').place(x=20, y=220)
     Button(newWindow, text='찾기', command=find_book2, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
+    Button(newWindow, text='추가', command=add_book, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=220)
 
     entry1 = Entry(newWindow, width=25)
     entry2 = Entry(newWindow, width=30)
@@ -804,7 +761,6 @@ def Book_add():
     entry6.place(x=120, y=160)
     entry7.place(x=85, y=190)
     entry8.place(x=85, y=220)
-
 
 # 책 정보 조회
 def Book_search():
@@ -871,7 +827,6 @@ def Book_search():
     labelCan.place(x=700, y=100)
 
 # 회원 정보 수정 및 삭제
-
 def bookfix_info():
     bookfix = Tk()
     bookfix.title('도서 정보 관리')
@@ -922,14 +877,9 @@ def bookfix_info():
     fixb.place(x=180, y=350)
     delb.place(x=260, y=350)
 
-
 # 더블클릭하면 나오는 창 함수 호출
-
-
-
 def bookfix_info_dbclick(event):
     bookfix_info()
-
 
 def main_UI():
     window = Tk()
@@ -953,7 +903,6 @@ def main_UI():
     BookMenu.add_command(label='새도서추가', command=Book_add)
     BookMenu.add_command(label='책정보조회', command=Book_search)
     BookMenu.add_command(label='책정보수정', command=bookfix_info)
-    BookMenu.add_command(label='책정보삭제', command=bookfix_info)
 
     RentMenu = Menu(mainMenu)
     mainMenu.add_cascade(label='도서대여', menu=RentMenu)
@@ -966,7 +915,6 @@ def main_UI():
     SettingMenu.add_command(label='종료', command= window.quit)
 
     window.mainloop()
-
 
 main_UI()
 
