@@ -65,8 +65,9 @@ def Book_add():
 def Book_search():
     
     searchBook = Tk()
-    searchBook.geometry("600x400")
+    searchBook.geometry("850x400")
     searchBook.title("도서 검색")
+    searchBook.configure(bg='LightSkyBlue1')
 
     #검색 기능 레이블 및 버튼 처리 
     labelBookName = Label(searchBook, text="도서명 :")
@@ -90,7 +91,7 @@ def Book_search():
     InputAuthor.insert(0, "저자명을 입력하세요.")
 
     #도서정보 표시할 리스트박스
-    resultbox = Listbox(searchBook, width=72, height=10, selectmode='single')
+    resultbox = Listbox(searchBook, width=110, height=10, selectmode='single')
     resultbox.insert(0, '사진')
     resultbox.bind('<Double-Button-1>', bookfix_info_dbclick)
     resultbox.place(x=25, y=172)
@@ -103,7 +104,9 @@ def Book_search():
     labelBookNameb = Label(searchBook, text="도서명", bg='blue', fg='white', \
                            width=15)
     labelAuthor = Label(searchBook, text="저자", bg='blue', fg='white', \
-                             width=10)
+                             width=15)
+    labelPUB = Label(searchBook, text="출판사", bg='blue', fg='white', \
+                             width=15)
     labelPrice = Label(searchBook, text="가격", bg='blue', fg='white', \
                        width=15)
     labelURL = Label(searchBook, text="URL", bg='blue', fg='white', \
@@ -112,34 +115,16 @@ def Book_search():
                      width=15)
 
     # 책 정보 레이블 위치 설정 
-    labelBookName.pack()
-    labelBookName.place(x=25, y=25)
-
-    labelPhoto.pack()
-    labelPhoto.place(x=25, y=100)
-
-    labelISBN.pack()
-    labelISBN.place(x=125, y=100)
-   
-           
-    labelBookNameb.pack()
-    labelBookNameb.place(x=225, y=100)
-
-    
-    labelAuthor.pack()
-    labelAuthor.place(x=325, y=100)
-
-    
-    labelPrice.pack()
-    labelPrice.place(x=400, y=100)
-
-    
-    labelURL.pack()
-    labelURL.place(x=510, y=100)
-
-    
-    labelCan.pack()
-    labelCan.place(x=570, y=100)
+  
+    labelBookName.place(x=25, y=25)  
+    labelPhoto.place(x=25, y=100)  
+    labelISBN.place(x=125, y=100)  
+    labelBookNameb.place(x=225, y=100)       
+    labelAuthor.place(x=325, y=100)    
+    labelPUB.place(x=425, y=100)  
+    labelPrice.place(x=525, y=100)       
+    labelURL.place(x=625, y=100)        
+    labelCan.place(x=700, y=100)
 
 #회원 정보 수정 및 삭제 
 
