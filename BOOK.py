@@ -7,36 +7,13 @@ from functools import partial
 #--도서 시작
 
 # 버튼 눌렀을 때 나오는 메세지 박스 코드
-def clickSearch():
-    messagebox.showinfo("검색", "검색합니다.")
+
 
 def find_book():
     messagebox.showinfo("중복", "검색합니다.")
 
 def find_book2():
     messagebox.showinfo("이미지", "찾기")
-
-def add_book(a):
-    # csv 불러오기
-    messagebox.showinfo("도서 추가", "추가")
-"""
-    new_book = { 'BOOK_ISBN' : a.entry1.get(),
-                 'BOOK.TITLE' : a.entry2.get(),
-                 'BOOK_AUTHOR' : a.entry3.get(),
-                 'BOOK_PUB' : a.entry4.get(),
-                 'BOOK_PRICE' : a.entry5.get(),
-                 'BOOK_LINK' : a.entry6.get(),
-                 "BOOK_IMAGE" : a.entry7.get(),
-                 "BOOK_EX" : a.entry8.get()
-    }
-    df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
-    df_book = df_book.set_index(df_book['BOOK_ISBN'])
-
-    df_book = df_book.append(new_book, ignore_index=True)
-    df_book = df_book.set_index(df_book['BOOK_ISBN'])
-
-    df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
-"""
 
 
 def photo_fix_btn():
@@ -50,6 +27,28 @@ def fix2_btn():
 
 # 새 책 추가
 def Book_add():
+
+    def add_book():
+        # csv 불러오기
+        messagebox.showinfo("도서 추가", "추가")
+
+        new_book = { 'BOOK_ISBN' : entry1.get(),
+                     'BOOK_TITLE' : entry2.get(),
+                     'BOOK_AUTHOR' : entry3.get(),
+                     'BOOK_PUB' : entry4.get(),
+                     'BOOK_PRICE' : entry5.get(),
+                     'BOOK_LINK' : entry6.get(),
+                     "BOOK_IMAGE" : entry7.get(),
+                     "BOOK_EX" : entry8.get()
+        }
+        df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
+        df_book = df_book.set_index(df_book['BOOK_ISBN'])
+
+        df_book = df_book.append(new_book, ignore_index=True)
+        df_book = df_book.set_index(df_book['BOOK_ISBN'])
+
+        df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+
     newWindow = Tk()
     newWindow.title('새 도서 추가')
     newWindow.geometry('450x250')
@@ -67,6 +66,8 @@ def Book_add():
     Label(newWindow, text='도서 사진 : ', bg='LightSkyBlue1').place(x=20, y=190)
     Label(newWindow, text='도서 설명 : ', bg='LightSkyBlue1').place(x=20, y=220)
     Button(newWindow, text='찾기', command=find_book2, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
+    Button(newWindow, text='추가', command= add_book,
+           width=8, height=1, bg='LightSkyBlue1').place(x=300, y=220)
 
     entry1 = Entry(newWindow, width=25)
     entry2 = Entry(newWindow, width=30)
@@ -87,12 +88,20 @@ def Book_add():
     entry8.place(x=85, y=220)
 
 
-    Button(newWindow, text='추가', command= partial(add_book, newWindow),
-           width=8, height=1, bg='LightSkyBlue1').place(x=300, y=220)
-
-
 # 책 정보 조회
 def Book_search():
+    # 불러오기
+    df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
+    df_book = df_book.set_index(df_book['BOOK_ISBN'])
+
+    def clickSearch():
+        BookName = InputBookName.get()
+        Author = InputAuthor.get()
+        resultbox = Listbox(searchBook, width=112, height=13, selectmode='single')
+        resultbox.insert(0, "추가중2")
+        resultbox.bind('<Double-Button-1>', bookfix_info_dbclick)
+        resultbox.place(x=25, y=120)
+
     searchBook = Tk()
     searchBook.geometry("850x400")
     searchBook.title("도서 검색")
@@ -117,12 +126,6 @@ def Book_search():
     InputAuthor.pack()
     InputAuthor.place(x=100, y=50)
     InputAuthor.insert(0, "저자명을 입력하세요.")
-
-    # 도서정보 표시할 리스트박스
-    resultbox = Listbox(searchBook, width=112, height=13, selectmode='single')
-    resultbox.insert(0, '사진')
-    resultbox.bind('<Double-Button-1>', bookfix_info_dbclick)
-    resultbox.place(x=25, y=120)
 
     # 검색한 책 정보 레이블
     labelPhoto = Label(searchBook, text="사진",  width=15)
@@ -154,6 +157,13 @@ def Book_search():
     labelPrice.place(x=525, y=100)
     labelURL.place(x=625, y=100)
     labelCan.place(x=700, y=100)
+
+    #csv에서 창 띄우기
+    resultbox = Listbox(searchBook, width=112, height=13, selectmode='single')
+    for x in range(len(df_book.index)):
+        resultbox.insert(x , df_book['BOOK_ISBN'].loc[x+1])
+    resultbox.bind('<Double-Button-1>', bookfix_info_dbclick)
+    resultbox.place(x=25, y=120)
 
 # 회원 정보 수정 및 삭제
 def bookfix_info():
