@@ -1,5 +1,5 @@
 from tkinter import *
-from MEMBER import *
+from member import *
 from BOOK import *
 from RENT import *
 
