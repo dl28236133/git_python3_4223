@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import pandas as pd
 from functools import partial
-
+import tkinter.ttk
 
 #--도서 시작
 
@@ -97,10 +97,98 @@ def Book_search():
     def clickSearch():
         BookName = InputBookName.get()
         Author = InputAuthor.get()
+
+        treeview = tkinter.ttk.Treeview(searchBook, columns=["1", "2", "3" , "4" , "5", "6", "7"])
+        treeview.pack()
+
+        # 각 컬럼 설정. 컬럼 이름, 컬럼 넓이, 정렬 등
+        treeview.column("#0", width=80, )
+        treeview.heading("#0", text="index")
+
+        treeview.column("#1", width=100, anchor="center")
+        treeview.heading("1", text="ISBN", anchor="center")
+
+        treeview.column("#2", width=100, anchor="center")
+        treeview.heading("2", text="도서명", anchor="center")
+
+        treeview.column("#3", width=80, anchor="center")
+        treeview.heading("3", text="저자명", anchor="center")
+
+        treeview.column("#4", width=80, anchor="center")
+        treeview.heading("4", text="출판사", anchor="center")
+
+        treeview.column("#5", width=100, anchor="center")
+        treeview.heading("5", text="가격", anchor="center")
+
+        treeview.column("#6", width=150, anchor="center")
+        treeview.heading("6", text="URL", anchor="center")
+
+        treeview.column("#7", width=100, anchor="center")
+        treeview.heading("7", text="대여여부", anchor="center")
+
+        # 표에 삽입될 데이터
+        treelist = [(1, 2, 3,4,5,6,7), (1, 2, 3,4,5,6,7), (1, 2, 3,4,5,6,7), (1, 2, 3,4,5,6,7)]
+
+        # 표에 데이터 삽입
+        for i in range(len(treelist)):
+            treeview.insert('', 'end', text=i, values=treelist[i], iid=str(i) + "번")
+
+        treeview.place(x=25,y=100)
+        """
         resultbox = Listbox(searchBook, width=112, height=13, selectmode='single')
         resultbox.insert(0, "추가중2")
         resultbox.bind('<Double-Button-1>', bookfix_info_dbclick)
         resultbox.place(x=25, y=120)
+        """
+
+    def bookfix_info_dbclick(event):
+        bookfix = Tk()
+        bookfix.title('도서 정보 관리')
+        bookfix.geometry('500x400')
+        bookfix.configure(bg='LightSkyBlue1')
+
+        ISBN = Label(bookfix, text='ISBN : ', bg='LightSkyBlue1')
+        NAME = Label(bookfix, text='도서명 : ', bg='LightSkyBlue1')
+        AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
+        PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
+        PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
+        EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
+        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+
+        ISBNinput = Label(bookfix, text='ISBN  ', width=20, bg='white', anchor='w')
+        NAMEinput = Label(bookfix, text='도서명  ', width=20, bg='white', anchor='w')
+        AUTHORinput = Label(bookfix, text='저자  ', width=20, bg='white', anchor='w')
+        PUBinput = Label(bookfix, text='출판사  ', width=20, bg='white', anchor='w')
+        PRICEinput = Label(bookfix, text='가격  ', width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text='정보 URL  ', width=20, bg='white', anchor='w')
+        EXinput = Label(bookfix, text='도서 설명  ', width=20, bg='white', anchor='w')
+
+        # 레이블 위젯 위치 설정
+        ISBN.place(x=200, y=20)
+        NAME.place(x=200, y=60)
+        AUTHOR.place(x=200, y=100)
+        PUB.place(x=200, y=140)
+        PRICE.place(x=200, y=180)
+        URL.place(x=200, y=220)
+        EX.place(x=200, y=260)
+        PHOTO.place(x=20, y=20)
+
+        # 레이블 위젯 위치 설정
+        ISBNinput.place(x=290, y=20)
+        NAMEinput.place(x=290, y=60)
+        AUTHORinput.place(x=290, y=100)
+        PUBinput.place(x=290, y=140)
+        PRICEinput.place(x=290, y=180)
+        URLinput.place(x=290, y=220)
+        EXinput.place(x=290, y=260)
+
+        fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
+        Backb = Button(bookfix, text='닫기', command=fix2_btn)
+
+        fixphotob.place(x=55, y=220)
+        Backb.place(x=260, y=350)
+
 
     searchBook = Tk()
     searchBook.geometry("850x400")
@@ -159,11 +247,43 @@ def Book_search():
     labelCan.place(x=700, y=100)
 
     #csv에서 창 띄우기
-    resultbox = Listbox(searchBook, width=112, height=13, selectmode='single')
-    for x in range(len(df_book.index)):
-        resultbox.insert(x , df_book['BOOK_ISBN'].loc[x+1])
-    resultbox.bind('<Double-Button-1>', bookfix_info_dbclick)
-    resultbox.place(x=25, y=120)
+    treeview = tkinter.ttk.Treeview(searchBook, columns=["1", "2", "3", "4", "5", "6", "7"])
+    treeview.pack()
+
+    # 각 컬럼 설정. 컬럼 이름, 컬럼 넓이, 정렬 등
+    treeview.column("#0", width=80, )
+    treeview.heading("#0", text="index")
+
+    treeview.column("#1", width=100, anchor="center")
+    treeview.heading("1", text="ISBN", anchor="center")
+
+    treeview.column("#2", width=100, anchor="center")
+    treeview.heading("2", text="도서명", anchor="center")
+
+    treeview.column("#3", width=80, anchor="center")
+    treeview.heading("3", text="저자명", anchor="center")
+
+    treeview.column("#4", width=80, anchor="center")
+    treeview.heading("4", text="출판사", anchor="center")
+
+    treeview.column("#5", width=100, anchor="center")
+    treeview.heading("5", text="가격", anchor="center")
+
+    treeview.column("#6", width=150, anchor="center")
+    treeview.heading("6", text="URL", anchor="center")
+
+    treeview.column("#7", width=100, anchor="center")
+    treeview.heading("7", text="대여여부", anchor="center")
+
+    # 표에 삽입될 데이터
+    treelist = [(1, 2, 3, 4, 5, 6, 7), (1, 2, 3, 4, 5, 6, 7), (1, 2, 3, 4,ㄴ 5, 6, 7), (1, 2, 3, 4, 5, 6, 7)]
+
+    # 표에 데이터 삽입
+    for i in range(len(treelist)):
+        treeview.insert('', 'end', text=i, values=treelist[i], iid=str(i) + "번")
+
+    treeview.place(x=25, y=100)
+
 
 # 회원 정보 수정 및 삭제
 def bookfix_info():
@@ -217,5 +337,6 @@ def bookfix_info():
     delb.place(x=260, y=350)
 
 # 더블클릭하면 나오는 창 함수 호출
-def bookfix_info_dbclick(event):
-    bookfix_info()
+
+
+# 더블클릭하면 나오는 창 함수 호출
