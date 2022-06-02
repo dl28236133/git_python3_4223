@@ -10,10 +10,10 @@ from functools import partial
 #member.csv 파일이 없다면 생성하는 함수
 def member_csv():
     try : 
-        df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
+        df_delmem = pd.read_csv('Member.csv', encoding='UTF-8-sig')
     except:
-        df_member = pd.DataFrame(columns=['Member_TEL','Member_NAME','Member_BIRTHDATE','Member_GENDER','Member_EMAIL','Member_IMAGE','Member_DEL_MEM'])
-        df_member.to_csv('Member.csv', index=False, encoding='UTF-8-sig')
+        df_delmem = pd.DataFrame(columns=['Member_TEL','Member_NAME','Member_BIRTHDATE','Member_GENDER','Member_EMAIL','Member_IMAGE','Member_DEL_MEM'])
+        df_delmem.to_csv('Member.csv', index=False, encoding='UTF-8-sig')
 
 # 회원정보 - 회원검색창
 def member_search():
@@ -25,32 +25,33 @@ def member_search():
         
         name = nameinput.get()
         tel = TELinput.get()
-        df_namelist = list(df_member['Member_NAME'])
-        df_tellist = list(df_member['Member_TEL'])
+        df_namelist = list(df_delmem['Member_NAME'])
+        df_tellist = list(df_delmem['Member_TEL'])
 
         if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+            datalist = []
             if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
-                for i in range(len(df_member.index)) :
-                    datalist = []
+                df_search = df_delmem.loc[df_delmem['Member_NAME']==name]
+                print(df_search)
+                for i in range(len(df_search.index)) :
                     datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
                                 df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    print(datalist)
 
             else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
+                datalist = [[df_delmem['Member_TEL'].loc[tel], df_delmem['Member_NAME'].loc[tel], df_delmem['Member_BIRTHDATE'].loc[tel],
+                            df_delmem['Member_GENDER'].loc[tel], df_delmem['Member_EMAIL'].loc[tel]]]
         
             for j in range(len(datalist)) :
-                treeview.insert('', index=j, values=datalist[j])
-            
+                treeview.insert('', 'end', values=datalist[j])
 
         else :
             messagebox.showinfo("오류", "존재하지 않는 회원입니다.")
             
     #csv 파일 불러오기
-    df_member = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-    df_member = df_member.set_index(df_member['Member_TEL'])
+    df_delmem = pd.read_csv("Member.csv", encoding='UTF-8-sig')
+    df_delmem = df_delmem.set_index(df_delmem['Member_TEL'])
 
     # 회원검색 창 생성
     memsearchwindow = Tk()
@@ -85,7 +86,7 @@ def member_search():
     treeview.column("4", width=80, anchor="center")
     treeview.heading("4", text="성별", anchor="center")
 
-    treeview.column("5", width=100, anchor="center")
+    treeview.column("5", width=120, anchor="center")
     treeview.heading("5", text="이메일", anchor="center")
 
 
@@ -180,8 +181,8 @@ def member_register():
     
     # 회원등록 - 등록 버튼 클릭 시
     def regi_btn():
-        df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
-        df_member = df_member.set_index(df_member['Member_TEL'])
+        df_delmem = pd.read_csv('Member.csv', encoding='UTF-8-sig')
+        df_delmem = df_delmem.set_index(df_delmem['Member_TEL'])
 
         new_member = {"Member_TEL": regiTELinput.get(),
               "Member_NAME": reginameinput.get(),
@@ -191,9 +192,9 @@ def member_register():
               "Member_IMAGE": regiphotoinput.get(),
               "Member_DEL_MEM": False}
 
-        df_member = df_member.append(new_member,ignore_index=True)
-        df_member = df_member.set_index(df_member['Member_TEL'])
-        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+        df_delmem = df_delmem.append(new_member,ignore_index=True)
+        df_delmem = df_delmem.set_index(df_delmem['Member_TEL'])
+        df_delmem.to_csv('Member.csv', index=False, encoding='utf-8-sig')
         messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
         memregiwindow.destroy()
         
@@ -254,10 +255,45 @@ def member_register():
     regibutton.place(x=160, y=260)
     regicanclebutton.place(x=220, y=260)
 
-        
-
 # 회원정보수정 - 회원검색 창
 def member_search_fix():
+
+    # 회원정보수정 - 회원검색 - 검색 버튼 클릭
+    def search_fix_btn():
+        messagebox.showinfo("검색실행", "회원 검색을 실행함")
+        for row in treeview.get_children() :
+            treeview.delete(row)
+        
+        name = nameinput.get()
+        tel = TELinput.get()
+        df_namelist = list(df_delmem['Member_NAME'])
+        df_tellist = list(df_delmem['Member_TEL'])
+
+        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+            datalist = []
+            if tel == '' :
+                df_search = df_delmem.loc[df_delmem['Member_NAME']==name]
+                print(df_search)
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    print(datalist)
+
+            else :
+                datalist = [[df_delmem['Member_TEL'].loc[tel], df_delmem['Member_NAME'].loc[tel], df_delmem['Member_BIRTHDATE'].loc[tel],
+                            df_delmem['Member_GENDER'].loc[tel], df_delmem['Member_EMAIL'].loc[tel]]]
+        
+            for j in range(len(datalist)) :
+                treeview.insert('', 'end', values=datalist[j])
+
+        else :
+            messagebox.showinfo("오류", "존재하지 않는 회원입니다.")
+            
+    #csv 파일 불러오기
+    df_delmem = pd.read_csv("Member.csv", encoding='UTF-8-sig')
+    df_delmem = df_delmem.set_index(df_delmem['Member_TEL'])
+
     # 회원검색(회원정보수정) 창 생성
     memsearchwindow = Tk()
     memsearchwindow.title('회원검색(회원정보수정)')
@@ -270,19 +306,38 @@ def member_search_fix():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스
-    resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    resultbox.insert(0, '회원이름')
-    resultbox.bind('<Double-Button-1>', member_info_fix_dbclick)
+    # 회원정보 표시할 리스트박스 -> treeview(표)로 대체
+    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
+    # resultbox.insert(0, '회원이름')
+    # resultbox.bind('<Double-Button-1>', member_info_fix_dbclick)
+
+    #회원정보 표시할 표 생성
+    treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
+    treeview.pack()
+
+    treeview.column("#1", width=100, )
+    treeview.heading("1", text="전화번호")
+
+    treeview.column("2", width=100, anchor="center")
+    treeview.heading("2", text="이름", anchor="center")
+
+    treeview.column("3", width=100, anchor="center")
+    treeview.heading("3", text="생년월일", anchor="center")
+
+    treeview.column("4", width=80, anchor="center")
+    treeview.heading("4", text="성별", anchor="center")
+
+    treeview.column("5", width=120, anchor="center")
+    treeview.heading("5", text="이메일", anchor="center")
 
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_fix_btn)
 
-    # 검색창 윗부분(컬럼스) 레이블로 생성
-    resultframe = Frame(memsearchwindow, relief='solid')
-    resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    for i in range(5):
-        resultlist[i] = Label(resultframe, text=resultlist[i])
+    # 검색창 윗부분(컬럼스) 레이블로 생성 -> treeview(표)로 대체
+    # resultframe = Frame(memsearchwindow, relief='solid')
+    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
+    # for i in range(5):
+    #     resultlist[i] = Label(resultframe, text=resultlist[i])
 
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
@@ -290,20 +345,18 @@ def member_search_fix():
     TELlabel.place(x=30, y=60)
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
+    treeview.place(x=25, y=150)
 
-    resultframe.place(x=25, y=150)
-    for result in resultlist:
-        result.pack(side=LEFT, padx=30)
+    # treeview(표)로 대체
+    # resultframe.place(x=25, y=150)
+    # for result in resultlist:
+    #     result.pack(side=LEFT, padx=30)
 
-    resultbox.place(x=25, y=172)
+    # resultbox.place(x=25, y=172)
 
-# 회원정보수정 - 회원검색 - 검색 버튼 클릭
-def search_fix_btn():
-    messagebox.showinfo("검색실행", "회원 검색을 실행함")
-
-# 회원정보수정 - 회원정보 리스트박스 회원 더블클릭시 이벤트
-def member_info_fix_dbclick(event):
-    member_info_fix()
+    # 회원정보수정 - 회원정보 리스트박스 회원 더블클릭시 이벤트 -> treeview(표)로 대체됨
+    # def member_info_fix_dbclick(event):
+    #     member_info_fix()
 
 # 회원정보수정 - 회원검색 - 회원정보(수정 버튼 존재)
 def member_info_fix():
@@ -375,6 +428,42 @@ def photo_fix_btn():
 
 # 회원탈퇴 - 회원검색 창
 def member_search_del():
+
+    # 회원탈퇴 - 회원검색 - 검색 버튼 클릭
+    def search_del_btn():
+        for row in treeview.get_children() :
+            treeview.delete(row)
+        
+        name = nameinput.get()
+        tel = TELinput.get()
+        df_namelist = list(df_delmem['Member_NAME'])
+        df_tellist = list(df_delmem['Member_TEL'])
+
+        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+            datalist = []
+            if tel == '' :
+                df_search = df_delmem.loc[df_delmem['Member_NAME']==name]
+                print(df_search)
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    print(datalist)
+
+            else :
+                datalist = [[df_delmem['Member_TEL'].loc[tel], df_delmem['Member_NAME'].loc[tel], df_delmem['Member_BIRTHDATE'].loc[tel],
+                            df_delmem['Member_GENDER'].loc[tel], df_delmem['Member_EMAIL'].loc[tel]]]
+        
+            for j in range(len(datalist)) :
+                treeview.insert('', 'end', values=datalist[j])
+
+        else :
+            messagebox.showinfo("오류", "존재하지 않는 회원입니다.")
+            
+    #csv 파일 불러오기
+    df_delmem = pd.read_csv("Member.csv", encoding='UTF-8-sig')
+    df_delmem = df_delmem.set_index(df_delmem['Member_TEL'])
+
     # 회원검색(회원탈퇴) 창 생성
     memsearchwindow = Tk()
     memsearchwindow.title('회원검색(회원탈퇴)')
@@ -387,19 +476,38 @@ def member_search_del():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스
-    resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    resultbox.insert(0, '회원이름')
-    resultbox.bind('<Double-Button-1>', member_info_del_dbclick)
+    # 회원정보 표시할 리스트박스  -> treeview(표)로 대체
+    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
+    # resultbox.insert(0, '회원이름')
+    # resultbox.bind('<Double-Button-1>', member_info_del_dbclick)
+
+    #회원정보 표시할 표 생성
+    treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
+    treeview.pack()
+
+    treeview.column("#1", width=100, )
+    treeview.heading("1", text="전화번호")
+
+    treeview.column("2", width=100, anchor="center")
+    treeview.heading("2", text="이름", anchor="center")
+
+    treeview.column("3", width=100, anchor="center")
+    treeview.heading("3", text="생년월일", anchor="center")
+
+    treeview.column("4", width=80, anchor="center")
+    treeview.heading("4", text="성별", anchor="center")
+
+    treeview.column("5", width=120, anchor="center")
+    treeview.heading("5", text="이메일", anchor="center")
 
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_del_btn)
 
-    # 검색창 윗부분(컬럼스) 레이블로 생성
-    resultframe = Frame(memsearchwindow, relief='solid')
-    resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    for i in range(5):
-        resultlist[i] = Label(resultframe, text=resultlist[i])
+    # 검색창 윗부분(컬럼스) 레이블로 생성  -> treeview(표)로 대체
+    # resultframe = Frame(memsearchwindow, relief='solid')
+    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
+    # for i in range(5):
+    #     resultlist[i] = Label(resultframe, text=resultlist[i])
 
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
@@ -407,20 +515,18 @@ def member_search_del():
     TELlabel.place(x=30, y=60)
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
+    treeview.place(x=25, y=150)
 
-    resultframe.place(x=25, y=150)
-    for result in resultlist:
-        result.pack(side=LEFT, padx=30)
+    # treeview(표)로 대체
+    # resultframe.place(x=25, y=150)
+    # for result in resultlist:
+    #     result.pack(side=LEFT, padx=30)
 
-    resultbox.place(x=25, y=172)
+    # resultbox.place(x=25, y=172)
+    # 회원탈퇴 - 회원정보 리스트박스 회원 더블클릭시 이벤트 -> treeview(표)로 대체됨
+    # def member_info_del_dbclick(event):
+    #     member_info_del()
 
-# 회원탈퇴 - 회원검색 - 검색 버튼 클릭
-def search_del_btn():
-    messagebox.showinfo("검색실행", "회원 검색을 실행함")
-
-# 회원탈퇴 - 회원정보 리스트박스 회원 더블클릭시 이벤트
-def member_info_del_dbclick(event):
-    member_info_del()
 
 # 회원탈퇴 - 회원검색 - 회원정보(회원탈퇴 버튼 존재)
 def member_info_del():
@@ -474,6 +580,43 @@ def info_del_btn():
 
 # 탈퇴회원검색
 def deleted_member_search():
+
+    # 탈퇴회원검색 - 검색 버튼 클릭 시
+    def deleted_search_btn():
+        for row in treeview.get_children() :
+            treeview.delete(row)
+        
+        name = nameinput.get()
+        tel = TELinput.get()
+        df_delmem = df_member.loc[df_delmem['Member_DEL_MEM']==True]
+        df_namelist = list(df_delmem['Member_NAME'])
+        df_tellist = list(df_delmem['Member_TEL'])
+
+        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+            datalist = []
+            if tel == '' :
+                df_search = df_delmem.loc[df_delmem['Member_NAME']==name]
+                print(df_search)
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    print(datalist)
+
+            else :
+                datalist = [[df_delmem['Member_TEL'].loc[tel], df_delmem['Member_NAME'].loc[tel], df_delmem['Member_BIRTHDATE'].loc[tel],
+                            df_delmem['Member_GENDER'].loc[tel], df_delmem['Member_EMAIL'].loc[tel]]]
+        
+            for j in range(len(datalist)) :
+                treeview.insert('', 'end', values=datalist[j])
+
+        else :
+            messagebox.showinfo("오류", "존재하지 않는 회원입니다.")
+            
+    #csv 파일 불러오기
+    df_member = pd.read_csv("Member.csv", encoding='UTF-8-sig')
+    df_member = df_member.set_index(df_member['Member_TEL'])
+
     # 탈퇴회원검색 창 생성
     memsearchwindow = Tk()
     memsearchwindow.title('탈퇴회원검색')
@@ -486,19 +629,38 @@ def deleted_member_search():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스
-    resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    resultbox.insert(0, '회원이름')
-    resultbox.bind('<Double-Button-1>', deleted_member_info_dbclick)
+    # 회원정보 표시할 리스트박스 -> treeview(표)로 대체
+    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
+    # resultbox.insert(0, '회원이름')
+    # resultbox.bind('<Double-Button-1>', deleted_member_info_dbclick)
 
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=deleted_search_btn)
 
-    # 검색창 윗부분(컬럼스) 레이블로 생성
-    resultframe = Frame(memsearchwindow, relief='solid')
-    resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    for i in range(5):
-        resultlist[i] = Label(resultframe, text=resultlist[i])
+    # 검색창 윗부분(컬럼스) 레이블로 생성 -> treeview(표)로 대체
+    # resultframe = Frame(memsearchwindow, relief='solid')
+    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
+    # for i in range(5):
+    #     resultlist[i] = Label(resultframe, text=resultlist[i])
+
+    #회원정보 표시할 표 생성
+    treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
+    treeview.pack()
+
+    treeview.column("#1", width=100, )
+    treeview.heading("1", text="전화번호")
+
+    treeview.column("2", width=100, anchor="center")
+    treeview.heading("2", text="이름", anchor="center")
+
+    treeview.column("3", width=100, anchor="center")
+    treeview.heading("3", text="생년월일", anchor="center")
+
+    treeview.column("4", width=80, anchor="center")
+    treeview.heading("4", text="성별", anchor="center")
+
+    treeview.column("5", width=120, anchor="center")
+    treeview.heading("5", text="이메일", anchor="center")
 
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
@@ -506,20 +668,18 @@ def deleted_member_search():
     TELlabel.place(x=30, y=60)
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
+    treeview.place(x=25, y=150)
 
-    resultframe.place(x=25, y=150)
-    for result in resultlist:
-        result.pack(side=LEFT, padx=30)
+    # treeview(표)로 대체
+    # resultframe.place(x=25, y=150)
+    # for result in resultlist:
+    #     result.pack(side=LEFT, padx=30)
 
-    resultbox.place(x=25, y=172)
+    # resultbox.place(x=25, y=172)
 
-# 탈퇴회원검색 - 검색 버튼 클릭 시
-def deleted_search_btn():
-    messagebox.showinfo("검색실행", "회원 검색을 실행함")
-
-# 탈퇴회원검색 - 회원정보 리스트박스 회원 더블클릭시 이벤트
-def deleted_member_info_dbclick(event):
-    deleted_member_info()
+    # 탈퇴회원검색 - 회원정보 리스트박스 회원 더블클릭시 이벤트
+    # def deleted_member_info_dbclick(event):
+    #     deleted_member_info()
 
 # 탈퇴회원검색 - 회원 선택 시 회원정보 창 출력
 def deleted_member_info():
