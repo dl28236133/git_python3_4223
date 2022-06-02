@@ -1,7 +1,8 @@
-
-from MEMBER import *
+from tkinter import *
+from member import *
 from BOOK import *
 from RENT import *
+
 
 def main_UI():
     window = Tk()
@@ -15,9 +16,13 @@ def main_UI():
     MemberMenu = Menu(mainMenu)
     mainMenu.add_cascade(label = '회원관리' , menu = MemberMenu)
     MemberMenu.add_command(label = '회원정보', command = member_search)
+    memberMenu.add_separator()
     MemberMenu.add_command(label='회원등록', command=member_register)
+    memberMenu.add_separator()
     MemberMenu.add_command(label='회원정보수정', command=member_search_fix)
+    memberMenu.add_separator()
     MemberMenu.add_command(label='회원탈퇴', command=member_search_del)
+    memberMenu.add_separator()
     MemberMenu.add_command(label='탈퇴회원확인', command=deleted_member_search)
 
     BookMenu = Menu(mainMenu)
@@ -37,7 +42,7 @@ def main_UI():
     SettingMenu.add_command(label='종료', command= window.quit)
 
     window.mainloop()
-member_csv()
+    
 main_UI()
 
 
