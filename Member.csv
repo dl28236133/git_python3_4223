@@ -1,4 +1,5 @@
 ﻿Member_TEL,Member_NAME,Member_BIRTHDATE,Member_GENDER,Member_EMAIL,Member_IMAGE,Member_DEL_MEM
 010-1234-5678,회원명,20220531,남,deu@gmail.com,,False
-010-5678-1234,회원,20220602,여,deu@naver.com,,False
+010-5678-1234,회원,20220602,남,deu@naver.com,C:/Users/Administrator/Desktop/mococococococococococococo.png,False
 010-1111-2222,회원명,20220602,여,deu@hanmail.net,,False
+010-2222-2222,이미지,20220620,남,image@gmail.com,C:/Users/Administrator/Desktop/python/7/GIF/horse.png,False
