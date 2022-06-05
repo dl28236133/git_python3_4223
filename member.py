@@ -136,11 +136,6 @@ def member_search():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스 -> treeview(표)로 대체
-    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    # resultbox.insert(0, '회원이름')
-    # resultbox.bind('<Double-Button-1>', member_info_dbclick) 
-
     #회원정보 표시할 표 생성, 더블클릭 이벤트 지정
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
@@ -164,12 +159,6 @@ def member_search():
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_btn)
 
-    # # 검색창 윗부분(컬럼스) 레이블로 생성 -> treeview(표)로 대체
-    # resultframe = Frame(memsearchwindow, relief='solid')
-    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    # for i in range(5):
-    #     resultlist[i] = Label(resultframe, text=resultlist[i])
-
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
@@ -177,13 +166,6 @@ def member_search():
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
-
-    # treeview(표)로 대체
-    # resultframe.place(x=25, y=150)
-    # for result in resultlist:
-    #     result.pack(side='left', padx=30)
-
-    # resultbox.place(x=25, y=172)
 
 
 # 회원등록
@@ -193,9 +175,12 @@ def member_register():
     # 회원등록 - 파일찾기 버튼 클릭 시
     def image_btn():
         imagename = askopenfilename(parent = memregiwindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
-        imagename_onlyfilename = 'image/' + os.path.basename(imagename)
-        regiphotoinput.delete(0, 'end')
-        regiphotoinput.insert(0, imagename_onlyfilename)
+        if imagename != '':
+            imagename_onlyfilename = 'image/' + os.path.basename(imagename)
+            regiphotoinput.configure(state='normal')
+            regiphotoinput.delete(0, 'end')
+            regiphotoinput.insert(0, imagename_onlyfilename)
+            regiphotoinput.configure(state='readonly')
 
     # 라디오버튼(성별) 커맨드 함수
     def genderM_set():
@@ -209,20 +194,32 @@ def member_register():
         df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
         df_member = df_member.set_index(df_member['Member_TEL'])
 
-        new_member = {"Member_TEL": regiTELinput.get(),
-              "Member_NAME": reginameinput.get(),
-              "Member_BIRTHDATE": regidateinput.get(),
-              "Member_GENDER": gender.get(),
-              "Member_EMAIL": regiemailinput.get(),
-              "Member_IMAGE": regiphotoinput.get(),
-              "Member_DEL_MEM": False}
+        if regiTELinput.get() in list(df_member['Member_TEL']) :
+            messagebox.showinfo("회원등록실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
 
-        df_member = df_member.append(new_member,ignore_index=True)
-        df_member = df_member.set_index(df_member['Member_TEL'])
-        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
-        messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
-        memregiwindow.destroy()
-        
+        elif reginameinput.get()=='' or regiTELinput.get()=='' or regidateinput.get()=='' or regiemailinput.get()=='' :
+            messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
+
+        else:
+            try :
+                int(regidateinput.get())
+                new_member = {"Member_TEL": regiTELinput.get(),
+                              "Member_NAME": reginameinput.get(),
+                              "Member_BIRTHDATE": regidateinput.get(),
+                              "Member_GENDER": gender.get(),
+                              "Member_EMAIL": regiemailinput.get(),
+                              "Member_IMAGE": regiphotoinput.get(),
+                              "Member_DEL_MEM": False}
+                df_member = df_member.append(new_member,ignore_index=True)
+                df_member = df_member.set_index(df_member['Member_TEL'])
+                df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
+                memregiwindow.destroy()
+
+            except :
+                messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
+
+
     # 회원등록 창 생성
     memregiwindow = Tk()
     memregiwindow.title('회원등록')
@@ -251,7 +248,7 @@ def member_register():
     # 회원정보 입력받을 엔트리
     regiTELinput = Entry(memregiwindow, width=25)
     regiemailinput = Entry(memregiwindow, width=25)
-    regiphotoinput = Entry(memregiwindow, width=25)
+    regiphotoinput = Entry(memregiwindow, width=25, state='readonly')
 
     # 이미지 파일 등록할 '파일찾기', 회원등록 '등록', 창 닫기 '취소' 버튼
     imagebutton = Button(memregiwindow, text='파일찾기', command=image_btn)
@@ -323,17 +320,48 @@ def member_search_fix():
             global imagefilename
             nonlocal df_member
 
-            df_member["Member_TEL"].loc[Tel] = infoTELinput.get()
-            df_member["Member_NAME"].loc[Tel] = infonameinput.get()
-            df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
-            df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
-            df_member["Member_GENDER"].loc[Tel] = gender.get()
-            df_member["Member_IMAGE"].loc[Tel] = imagefilename
+            if infoTELinput.get() == df_member['Member_TEL'].loc[Tel] :
+                try :
+                    int(infodateinput.get())
+                    df_member["Member_TEL"].loc[Tel] = infoTELinput.get()
+                    df_member["Member_NAME"].loc[Tel] = infonameinput.get()
+                    df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                    df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                    df_member["Member_GENDER"].loc[Tel] = gender.get()
+                    df_member["Member_IMAGE"].loc[Tel] = imagefilename
 
-            df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                    df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
-            messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
-            meminfowindow.destroy()
+                    messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
+                    meminfowindow.destroy()
+                
+                except :
+                    messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
+
+            elif infoTELinput.get() in list(df_member['Member_TEL']) :
+                messagebox.showinfo("회원정보수정 실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
+
+            elif infonameinput.get()=='' or infoTELinput.get()=='' or infodateinput.get()=='' or infoemailinput.get()=='' :
+                messagebox.showinfo("회원정보수정 실패", "입력되지 않은 회원정보가 있습니다.")
+
+            else:
+                try :
+                    int(infodateinput.get())
+                    df_member["Member_TEL"].loc[Tel] = infoTELinput.get()
+                    df_member["Member_NAME"].loc[Tel] = infonameinput.get()
+                    df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                    df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                    df_member["Member_GENDER"].loc[Tel] = gender.get()
+                    df_member["Member_IMAGE"].loc[Tel] = imagefilename
+
+                    df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+
+                    messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
+                    meminfowindow.destroy()
+                
+                except :
+                    messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
+
 
             for row in treeview.get_children() :
                 treeview.delete(row)
@@ -374,8 +402,8 @@ def member_search_fix():
                     infophotolabel.image = meminfophoto
 
             except :
-                imagefilename = 'image/' + os.path.basename(imagename)
                 if imagefilename!='' :
+                    imagefilename = 'image/' + os.path.basename(imagename)
                     meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                     infophotolabel.configure(image=meminfophoto)
                     infophotolabel.image = meminfophoto
@@ -495,11 +523,6 @@ def member_search_fix():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스 -> treeview(표)로 대체
-    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    # resultbox.insert(0, '회원이름')
-    # resultbox.bind('<Double-Button-1>', member_info_fix_dbclick)
-
     #회원정보 표시할 표 생성
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
@@ -523,12 +546,6 @@ def member_search_fix():
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_fix_btn)
 
-    # 검색창 윗부분(컬럼스) 레이블로 생성 -> treeview(표)로 대체
-    # resultframe = Frame(memsearchwindow, relief='solid')
-    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    # for i in range(5):
-    #     resultlist[i] = Label(resultframe, text=resultlist[i])
-
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
@@ -536,13 +553,6 @@ def member_search_fix():
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
-
-    # treeview(표)로 대체
-    # resultframe.place(x=25, y=150)
-    # for result in resultlist:
-    #     result.pack(side=LEFT, padx=30)
-
-    # resultbox.place(x=25, y=172)
 
 
 # 회원탈퇴 - 회원검색 창
@@ -705,11 +715,6 @@ def member_search_del():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스  -> treeview(표)로 대체
-    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    # resultbox.insert(0, '회원이름')
-    # resultbox.bind('<Double-Button-1>', member_info_del_dbclick)
-
     #회원정보 표시할 표 생성, 더블클릭 이벤트 지정
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
@@ -733,12 +738,6 @@ def member_search_del():
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_del_btn)
 
-    # 검색창 윗부분(컬럼스) 레이블로 생성  -> treeview(표)로 대체
-    # resultframe = Frame(memsearchwindow, relief='solid')
-    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    # for i in range(5):
-    #     resultlist[i] = Label(resultframe, text=resultlist[i])
-
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
@@ -746,13 +745,6 @@ def member_search_del():
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
-
-    # treeview(표)로 대체
-    # resultframe.place(x=25, y=150)
-    # for result in resultlist:
-    #     result.pack(side=LEFT, padx=30)
-
-    # resultbox.place(x=25, y=172)
 
 
 # 탈퇴회원검색
@@ -875,19 +867,8 @@ def deleted_member_search():
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
-    # 회원정보 표시할 리스트박스 -> treeview(표)로 대체
-    # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
-    # resultbox.insert(0, '회원이름')
-    # resultbox.bind('<Double-Button-1>', deleted_member_info_dbclick)
-
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=deleted_search_btn)
-
-    # 검색창 윗부분(컬럼스) 레이블로 생성 -> treeview(표)로 대체
-    # resultframe = Frame(memsearchwindow, relief='solid')
-    # resultlist = ['이름', '생년월일', '성별', '전화번호', '이메일']
-    # for i in range(5):
-    #     resultlist[i] = Label(resultframe, text=resultlist[i])
 
     #회원정보 표시할 표 생성
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
@@ -916,13 +897,6 @@ def deleted_member_search():
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
-
-    # treeview(표)로 대체
-    # resultframe.place(x=25, y=150)
-    # for result in resultlist:
-    #     result.pack(side=LEFT, padx=30)
-
-    # resultbox.place(x=25, y=172)
 
     
 
