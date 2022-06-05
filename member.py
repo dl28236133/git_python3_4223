@@ -5,7 +5,6 @@ from tkinter.filedialog import *
 import math
 import pandas as pd
 
-<<<<<<< HEAD
 
 # --회원시작
 
@@ -27,32 +26,11 @@ def member_search():
         for row in treeview.get_children():
             treeview.delete(row)
 
-=======
-#--회원시작
-
-#member.csv 파일이 없다면 생성하는 함수
-def member_csv():
-    try : 
-        df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
-    except:
-        df_member = pd.DataFrame(columns=['Member_TEL','Member_NAME','Member_BIRTHDATE','Member_GENDER','Member_EMAIL','Member_IMAGE','Member_DEL_MEM'])
-        df_member.to_csv('Member.csv', index=False, encoding='UTF-8-sig')
-
-# 회원정보 - 회원검색창
-def member_search():
-
-    # 회원검색 - 검색 버튼 클릭 시
-    def search_btn():
-        for row in treeview.get_children() :
-            treeview.delete(row)
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         name = nameinput.get()
         tel = TELinput.get()
         df_namelist = list(df_member['Member_NAME'])
         df_tellist = list(df_member['Member_TEL'])
 
-<<<<<<< HEAD
         if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel == '') or (
                 name == '' and tel in df_tellist):
             #messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
@@ -73,41 +51,15 @@ def member_search():
                 treeview.insert('', 'end', values=datalist[j])
 
         else:
-=======
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
-            datalist = []
-            if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-
-            else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
-        
-            for j in range(len(datalist)) :
-                treeview.insert('', 'end', values=datalist[j])
-
-        else :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
 
     # 회원검색 - 회원 선택 시 회원정보 창 출력
     def member_info():
 
-<<<<<<< HEAD
         # 사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
 
-=======
-        #사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
-        selectedmem = treeview.focus()
-        Tel = treeview.set(selectedmem, column='1')
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         global imagefilename
         imagefilename = df_member['Member_IMAGE'].loc[Tel]
 
@@ -118,7 +70,6 @@ def member_search():
         meminfowindow.configure(bg='LightSkyBlue1')
 
         # 회원정보 인덱스 표시할 레이블
-<<<<<<< HEAD
         infonamelabel = Label(meminfowindow, text='회원명', bg='LightSkyBlue1')
         infodatelabel = Label(meminfowindow, text='생년월일', bg='LightSkyBlue1')
         infogenderlabel = Label(meminfowindow, text='성별', bg='LightSkyBlue1')
@@ -128,22 +79,10 @@ def member_search():
         # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try:
             if math.isnan(imagefilename) == False:
-=======
-        infonamelabel = Label(meminfowindow, text='회원명',  bg='LightSkyBlue1')
-        infodatelabel = Label(meminfowindow, text='생년월일',  bg='LightSkyBlue1')
-        infogenderlabel = Label(meminfowindow, text='성별',  bg='LightSkyBlue1')
-        infoTELlabel = Label(meminfowindow, text='전화번호', bg='LightSkyBlue1')
-        infoemaillabel = Label(meminfowindow, text='이메일', bg='LightSkyBlue1')
-        
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
                 meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
-<<<<<<< HEAD
             else:
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
@@ -158,20 +97,6 @@ def member_search():
                               anchor='w')
         infogenderinput = Label(meminfowindow, text=df_member['Member_GENDER'].loc[Tel], width=25, bg='white',
                                 anchor='w')
-=======
-            else :
-                infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
-
-        except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
-
-        # 회원정보(실제 회원 정보) 표시할 레이블
-        infonameinput = Label(meminfowindow, text=df_member['Member_NAME'].loc[Tel], width=25, bg='white', anchor='w')
-        infodateinput = Label(meminfowindow, text=df_member['Member_BIRTHDATE'].loc[Tel], width=25, bg='white', anchor='w')
-        infogenderinput = Label(meminfowindow, text=df_member['Member_GENDER'].loc[Tel], width=25, bg='white', anchor='w')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         infoTELinput = Label(meminfowindow, text=df_member['Member_TEL'].loc[Tel], width=25, bg='white', anchor='w')
         infoemailinput = Label(meminfowindow, text=df_member['Member_EMAIL'].loc[Tel], width=25, bg='white', anchor='w')
 
@@ -195,27 +120,16 @@ def member_search():
 
         # 창 닫기 버튼 위치 지정
         infoclosebutton.place(x=440, y=250)
-<<<<<<< HEAD
 
     # 회원정보 - 끝
-=======
-    #회원정보 - 끝
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
 
     # 회원정보 표(treeview) 회원 더블클릭시 이벤트
     def member_info_dbclick(event):
         member_info()
-<<<<<<< HEAD
 
     # csv 파일 불러오기, 회원탈퇴 여부=False인 정보만 불러 옴
     df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
     df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM'] == False]
-=======
-            
-    #csv 파일 불러오기, 회원탈퇴 여부=False인 정보만 불러 옴
-    df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-    df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     df_member = df_member.set_index(df_member['Member_TEL'])
 
     # 회원검색 창 생성
@@ -226,26 +140,16 @@ def member_search():
 
     # 이름, 전화번호 기입 파트 레이블/엔트리
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
-<<<<<<< HEAD
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
-=======
-    TELlabel = Label(memsearchwindow, text='전화번호',  bg='LightSkyBlue1')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
     # 회원정보 표시할 리스트박스 -> treeview(표)로 대체
     # resultbox = Listbox(memsearchwindow, width=72, height=10, selectmode='single')
     # resultbox.insert(0, '회원이름')
-<<<<<<< HEAD
     # resultbox.bind('<Double-Button-1>', member_info_dbclick)
 
     # 회원정보 표시할 표 생성, 더블클릭 이벤트 지정
-=======
-    # resultbox.bind('<Double-Button-1>', member_info_dbclick) 
-
-    #회원정보 표시할 표 생성, 더블클릭 이벤트 지정
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_dbclick)
@@ -292,44 +196,28 @@ def member_search():
 
 # 회원등록
 imagefilename = None
-<<<<<<< HEAD
 
 
 def member_register():
     # 회원등록 - 파일찾기 버튼 클릭 시
     def image_btn():
         imagename = askopenfilename(parent=memregiwindow, filetypes=(("png 파일", "*.png"), ("모든 파일", "*.*")))
-=======
-def member_register():
-
-    # 회원등록 - 파일찾기 버튼 클릭 시
-    def image_btn():
-        imagename = askopenfilename(parent = memregiwindow, filetypes=(("png 파일", "*.png"),("모든 파일","*.*")))
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         regiphotoinput.delete(0, 'end')
         regiphotoinput.insert(0, imagename)
 
     # 라디오버튼(성별) 커맨드 함수
     def genderM_set():
         gender.set("남")
-<<<<<<< HEAD
 
     def genderW_set():
         gender.set("여")
 
-=======
-    
-    def genderW_set():
-        gender.set("여")
-    
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     # 회원등록 - 등록 버튼 클릭 시
     def regi_btn():
         df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
         df_member = df_member.set_index(df_member['Member_TEL'])
 
         new_member = {"Member_TEL": regiTELinput.get(),
-<<<<<<< HEAD
                       "Member_NAME": reginameinput.get(),
                       "Member_BIRTHDATE": regidateinput.get(),
                       "Member_GENDER": gender.get(),
@@ -338,25 +226,11 @@ def member_register():
                       "Member_DEL_MEM": False}
 
         df_member = df_member.append(new_member, ignore_index=True)
-=======
-              "Member_NAME": reginameinput.get(),
-              "Member_BIRTHDATE": regidateinput.get(),
-              "Member_GENDER": gender.get(),
-              "Member_EMAIL": regiemailinput.get(),
-              "Member_IMAGE": regiphotoinput.get(),
-              "Member_DEL_MEM": False}
-
-        df_member = df_member.append(new_member,ignore_index=True)
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         df_member = df_member.set_index(df_member['Member_TEL'])
         df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
         messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
         memregiwindow.destroy()
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     # 회원등록 창 생성
     memregiwindow = Tk()
     memregiwindow.title('회원등록')
@@ -365,19 +239,11 @@ def member_register():
 
     # 회원정보 인덱스 표시할 레이블
     reginamelabel = Label(memregiwindow, text='회원명', bg='LightSkyBlue1')
-<<<<<<< HEAD
     regidatelabel = Label(memregiwindow, text='생년월일', bg='LightSkyBlue1')
     regigenderlabel = Label(memregiwindow, text='성별', bg='LightSkyBlue1')
     regiTELlabel = Label(memregiwindow, text='전화번호', bg='LightSkyBlue1')
     regiemaillabel = Label(memregiwindow, text='이메일', bg='LightSkyBlue1')
     regiphotolabel = Label(memregiwindow, text='사진', bg='LightSkyBlue1')
-=======
-    regidatelabel = Label(memregiwindow, text='생년월일',  bg='LightSkyBlue1')
-    regigenderlabel = Label(memregiwindow, text='성별',  bg='LightSkyBlue1')
-    regiTELlabel = Label(memregiwindow, text='전화번호',  bg='LightSkyBlue1')
-    regiemaillabel = Label(memregiwindow, text='이메일',  bg='LightSkyBlue1')
-    regiphotolabel = Label(memregiwindow, text='사진',  bg='LightSkyBlue1')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
 
     # 회원정보 입력받을 엔트리
     reginameinput = Entry(memregiwindow, width=25)
@@ -425,28 +291,17 @@ def member_register():
 
 # 회원정보수정 - 회원검색 창
 def member_search_fix():
-<<<<<<< HEAD
     # 회원정보수정 - 회원검색 - 검색 버튼 클릭
     def search_fix_btn():
 
         for row in treeview.get_children():
             treeview.delete(row)
 
-=======
-
-    # 회원정보수정 - 회원검색 - 검색 버튼 클릭
-    def search_fix_btn():
-
-        for row in treeview.get_children() :
-            treeview.delete(row)
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         name = nameinput.get()
         tel = TELinput.get()
         df_namelist = list(df_member['Member_NAME'])
         df_tellist = list(df_member['Member_TEL'])
 
-<<<<<<< HEAD
         if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel == '') or (
                 name == '' and tel in df_tellist):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
@@ -467,25 +322,6 @@ def member_search_fix():
                 treeview.insert('', 'end', values=datalist[j])
 
         else:
-=======
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
-            datalist = []
-            if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-
-            else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
-        
-            for j in range(len(datalist)) :
-                treeview.insert('', 'end', values=datalist[j])
-
-        else :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
 
     # 회원정보수정 - 회원검색 - 회원정보(수정 버튼 존재)
@@ -509,19 +345,11 @@ def member_search_fix():
             messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
             meminfowindow.destroy()
 
-<<<<<<< HEAD
             for row in treeview.get_children():
                 treeview.delete(row)
 
             df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
             df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM'] == False]
-=======
-            for row in treeview.get_children() :
-                treeview.delete(row)
-        
-            df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-            df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
             df_member = df_member.set_index(df_member['Member_TEL'])
 
             name = nameinput.get()
@@ -529,7 +357,6 @@ def member_search_fix():
             df_namelist = list(df_member['Member_NAME'])
             df_tellist = list(df_member['Member_TEL'])
 
-<<<<<<< HEAD
             if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel == '') or (
                     name == '' and tel in df_tellist):
                 datalist = []
@@ -546,43 +373,19 @@ def member_search_fix():
                                  df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
 
             for j in range(len(datalist)):
-=======
-            if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
-                datalist = []
-                if tel == '' :
-                    df_search = df_member.loc[df_member['Member_NAME']==name]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-
-                else :
-                        datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                                     df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
-        
-            for j in range(len(datalist)) :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
                 treeview.insert('', 'end', values=datalist[j])
 
         # 회원정보수정 - 회원검색 - 회원정보 - 이미지 변경 버튼 클릭
         def photo_fix_btn():
-<<<<<<< HEAD
             imagename = askopenfilename(parent=meminfowindow, filetypes=(("png 파일", "*.png"), ("모든 파일", "*.*")))
             global imagefilename
             imagefilename = imagename
             try:
                 if math.isnan(imagefilename) == False:
-=======
-            imagename = askopenfilename(parent = meminfowindow, filetypes=(("png 파일", "*.png"),("모든 파일","*.*")))
-            global imagefilename
-            imagefilename = imagename
-            try :
-                if math.isnan(imagefilename)==False :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
                     meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                     infophotolabel.configure(image=meminfophoto)
                     infophotolabel.image = meminfophoto
 
-<<<<<<< HEAD
             except:
                 if imagefilename != '':
                     meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
@@ -601,27 +404,6 @@ def member_search_fix():
         Tel = treeview.set(selectedmem, column='1')
 
         # 지정된 이미지 파일 경로를 전역변수 imagefilename에 저장함.
-=======
-            except :
-                if imagefilename!='' :
-                    meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                    infophotolabel.configure(image=meminfophoto)
-                    infophotolabel.image = meminfophoto
-                
-        
-        # 라디오버튼(성별) 커맨드 함수
-        def genderM_set():
-            gender.set("남")
-    
-        def genderW_set():
-            gender.set("여")
-
-        #사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
-        selectedmem = treeview.focus()
-        Tel = treeview.set(selectedmem, column='1')
-        
-        #지정된 이미지 파일 경로를 전역변수 imagefilename에 저장함.
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         global imagefilename
         imagefilename = df_member['Member_IMAGE'].loc[Tel]
 
@@ -632,7 +414,6 @@ def member_search_fix():
         meminfowindow.configure(bg='LightSkyBlue1')
 
         # 회원정보 인덱스 표시할 레이블
-<<<<<<< HEAD
         infonamelabel = Label(meminfowindow, text='회원명', bg='LightSkyBlue1')
         infodatelabel = Label(meminfowindow, text='생년월일', bg='LightSkyBlue1')
         infogenderlabel = Label(meminfowindow, text='성별', bg='LightSkyBlue1')
@@ -642,22 +423,10 @@ def member_search_fix():
         # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try:
             if math.isnan(imagefilename) == False:
-=======
-        infonamelabel = Label(meminfowindow, text='회원명',  bg='LightSkyBlue1')
-        infodatelabel = Label(meminfowindow, text='생년월일',  bg='LightSkyBlue1')
-        infogenderlabel = Label(meminfowindow, text='성별',  bg='LightSkyBlue1')
-        infoTELlabel = Label(meminfowindow, text='전화번호',  bg='LightSkyBlue1')
-        infoemaillabel = Label(meminfowindow, text='이메일', bg='LightSkyBlue1')
-
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
                 meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
-<<<<<<< HEAD
             else:
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
@@ -665,15 +434,6 @@ def member_search_fix():
             meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
             infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
             infophotolabel.image = meminfophoto
-=======
-            else :
-                infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
-
-        except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
 
         # 회원정보를 입력받을 엔트리
         infonameinput = Entry(meminfowindow, width=25)
@@ -683,7 +443,6 @@ def member_search_fix():
 
         # 회원정보 중 성별을 입력받을 라디오버튼
         gender = StringVar()
-<<<<<<< HEAD
         gender.set(df_member['Member_GENDER'].loc[Tel])
         infogenderinput1 = Radiobutton(meminfowindow, text='남', bg='white', variable=gender, value="남",
                                        command=genderM_set)
@@ -693,15 +452,6 @@ def member_search_fix():
             infogenderinput1.select()
 
         else:
-=======
-        gender.set(df_member['Member_GENDER'].loc[Tel])  
-        infogenderinput1 = Radiobutton(meminfowindow, text='남', bg='white', variable=gender, value="남", command=genderM_set)
-        infogenderinput2 = Radiobutton(meminfowindow, text='여', bg='white', variable=gender, value="여", command=genderW_set)
-        if gender.get() == '남' :
-            infogenderinput1.select()
-
-        else :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
             infogenderinput2.select()
 
         # 회원정보를 입력받을 엔트리
@@ -735,26 +485,16 @@ def member_search_fix():
         infoclosebutton.place(x=440, y=250)
         infofixbutton.place(x=390, y=250)
         photofixbutton.place(x=55, y=220)
-<<<<<<< HEAD
 
-=======
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     # 회원정보수정-회원정보 끝
 
     # 회원정보 표(treeview) 회원 더블클릭시 이벤트
     def member_info_fix_dbclick(event):
         member_info_fix()
-<<<<<<< HEAD
 
     # csv 파일 불러오기, 회원탈퇴 여부=False인 정보만 불러 옴
     df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
     df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM'] == False]
-=======
-            
-    #csv 파일 불러오기, 회원탈퇴 여부=False인 정보만 불러 옴
-    df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-    df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     df_member = df_member.set_index(df_member['Member_TEL'])
 
     # 회원검색(회원정보수정) 창 생성
@@ -764,13 +504,8 @@ def member_search_fix():
     memsearchwindow.configure(bg='LightSkyBlue1')
 
     # 이름, 전화번호 기입 파트 레이블/엔트리
-<<<<<<< HEAD
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
-=======
-    namelabel = Label(memsearchwindow, text='회원명',  bg='LightSkyBlue1')
-    TELlabel = Label(memsearchwindow, text='전화번호',  bg='LightSkyBlue1')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
@@ -779,11 +514,7 @@ def member_search_fix():
     # resultbox.insert(0, '회원이름')
     # resultbox.bind('<Double-Button-1>', member_info_fix_dbclick)
 
-<<<<<<< HEAD
     # 회원정보 표시할 표 생성
-=======
-    #회원정보 표시할 표 생성
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_fix_dbclick)
@@ -830,26 +561,16 @@ def member_search_fix():
 
 # 회원탈퇴 - 회원검색 창
 def member_search_del():
-<<<<<<< HEAD
     # 회원탈퇴 - 회원검색 - 검색 버튼 클릭
     def search_del_btn():
         for row in treeview.get_children():
             treeview.delete(row)
 
-=======
-
-    # 회원탈퇴 - 회원검색 - 검색 버튼 클릭
-    def search_del_btn():
-        for row in treeview.get_children() :
-            treeview.delete(row)
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         name = nameinput.get()
         tel = TELinput.get()
         df_namelist = list(df_member['Member_NAME'])
         df_tellist = list(df_member['Member_TEL'])
 
-<<<<<<< HEAD
         if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel == '') or (
                 name == '' and tel in df_tellist):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
@@ -872,28 +593,6 @@ def member_search_del():
         else:
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
 
-=======
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
-            datalist = []
-            if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-
-            else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
-        
-            for j in range(len(datalist)) :
-                treeview.insert('', 'end', values=datalist[j])
-
-        else :
-            messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
-
-
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     # 회원탈퇴 - 회원검색 - 회원정보(회원탈퇴 버튼 존재)
     def member_info_del():
 
@@ -908,19 +607,11 @@ def member_search_del():
             messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
             meminfowindow.destroy()
 
-<<<<<<< HEAD
             for row in treeview.get_children():
                 treeview.delete(row)
 
             df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
             df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM'] == False]
-=======
-            for row in treeview.get_children() :
-                treeview.delete(row)
-        
-            df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-            df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
             df_member = df_member.set_index(df_member['Member_TEL'])
 
             name = nameinput.get()
@@ -928,7 +619,6 @@ def member_search_del():
             df_namelist = list(df_member['Member_NAME'])
             df_tellist = list(df_member['Member_TEL'])
 
-<<<<<<< HEAD
             if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel == '') or (
                     name == '' and tel in df_tellist):
                 datalist = []
@@ -951,28 +641,6 @@ def member_search_del():
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
 
-=======
-            if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
-                datalist = []
-                if tel == '' :
-                    df_search = df_member.loc[df_member['Member_NAME']==name]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-
-                else :
-                        datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                                     df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
-        
-            for j in range(len(datalist)) :
-                treeview.insert('', 'end', values=datalist[j])
-
-
-        #사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
-        selectedmem = treeview.focus()
-        Tel = treeview.set(selectedmem, column='1')
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         global imagefilename
         imagefilename = df_member['Member_IMAGE'].loc[Tel]
 
@@ -984,7 +652,6 @@ def member_search_del():
 
         # 회원정보 인덱스 표시할 레이블
         infonamelabel = Label(meminfowindow, text='회원명', bg='LightSkyBlue1')
-<<<<<<< HEAD
         infodatelabel = Label(meminfowindow, text='생년월일', bg='LightSkyBlue1')
         infogenderlabel = Label(meminfowindow, text='성별', bg='LightSkyBlue1')
         infoTELlabel = Label(meminfowindow, text='전화번호', bg='LightSkyBlue1')
@@ -993,21 +660,10 @@ def member_search_del():
         # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try:
             if math.isnan(imagefilename) == False:
-=======
-        infodatelabel = Label(meminfowindow, text='생년월일',  bg='LightSkyBlue1')
-        infogenderlabel = Label(meminfowindow, text='성별',bg='LightSkyBlue1')
-        infoTELlabel = Label(meminfowindow, text='전화번호',  bg='LightSkyBlue1')
-        infoemaillabel = Label(meminfowindow, text='이메일',  bg='LightSkyBlue1')
-        
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
                 meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
-<<<<<<< HEAD
             else:
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
@@ -1022,20 +678,6 @@ def member_search_del():
                               anchor='w')
         infogenderinput = Label(meminfowindow, text=df_member['Member_GENDER'].loc[Tel], width=25, bg='white',
                                 anchor='w')
-=======
-            else :
-                infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
-
-        except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
-
-        # 회원정보(실제 회원 정보) 표시할 레이블
-        infonameinput = Label(meminfowindow, text=df_member['Member_NAME'].loc[Tel], width=25, bg='white', anchor='w')
-        infodateinput = Label(meminfowindow, text=df_member['Member_BIRTHDATE'].loc[Tel], width=25, bg='white', anchor='w')
-        infogenderinput = Label(meminfowindow, text=df_member['Member_GENDER'].loc[Tel], width=25, bg='white', anchor='w')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         infoTELinput = Label(meminfowindow, text=df_member['Member_TEL'].loc[Tel], width=25, bg='white', anchor='w')
         infoemailinput = Label(meminfowindow, text=df_member['Member_EMAIL'].loc[Tel], width=25, bg='white', anchor='w')
 
@@ -1064,17 +706,10 @@ def member_search_del():
 
     def member_info_del_dbclick(event):
         member_info_del()
-<<<<<<< HEAD
 
     # csv 파일 불러오기
     df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
     df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM'] == False]
-=======
-            
-    #csv 파일 불러오기
-    df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-    df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     df_member = df_member.set_index(df_member['Member_TEL'])
 
     # 회원검색(회원탈퇴) 창 생성
@@ -1084,13 +719,8 @@ def member_search_del():
     memsearchwindow.configure(bg='LightSkyBlue1')
 
     # 이름, 전화번호 기입 파트 레이블/엔트리
-<<<<<<< HEAD
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
-=======
-    namelabel = Label(memsearchwindow, text='회원명',  bg='LightSkyBlue1')
-    TELlabel = Label(memsearchwindow, text='전화번호',  bg='LightSkyBlue1')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
@@ -1099,11 +729,7 @@ def member_search_del():
     # resultbox.insert(0, '회원이름')
     # resultbox.bind('<Double-Button-1>', member_info_del_dbclick)
 
-<<<<<<< HEAD
     # 회원정보 표시할 표 생성, 더블클릭 이벤트 지정
-=======
-    #회원정보 표시할 표 생성, 더블클릭 이벤트 지정
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_del_dbclick)
@@ -1150,26 +776,16 @@ def member_search_del():
 
 # 탈퇴회원검색
 def deleted_member_search():
-<<<<<<< HEAD
     # 탈퇴회원검색 - 검색 버튼 클릭 시
     def deleted_search_btn():
         for row in treeview.get_children():
             treeview.delete(row)
 
-=======
-
-    # 탈퇴회원검색 - 검색 버튼 클릭 시
-    def deleted_search_btn():
-        for row in treeview.get_children() :
-            treeview.delete(row)
-        
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         name = nameinput.get()
         tel = TELinput.get()
         df_namelist = list(df_delmem['Member_NAME'])
         df_tellist = list(df_delmem['Member_TEL'])
 
-<<<<<<< HEAD
         if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel == '') or (
                 name == '' and tel in df_tellist):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
@@ -1190,35 +806,12 @@ def deleted_member_search():
                 treeview.insert('', 'end', values=datalist[j])
 
         else:
-=======
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
-            datalist = []
-            if tel == '' :
-                df_search = df_delmem.loc[df_delmem['Member_NAME']==name]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-
-            else :
-                datalist = [[df_delmem['Member_TEL'].loc[tel], df_delmem['Member_NAME'].loc[tel], df_delmem['Member_BIRTHDATE'].loc[tel],
-                            df_delmem['Member_GENDER'].loc[tel], df_delmem['Member_EMAIL'].loc[tel]]]
-        
-            for j in range(len(datalist)) :
-                treeview.insert('', 'end', values=datalist[j])
-
-        else :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 회원탈퇴 처리되지 않은 회원입니다.")
 
     # 탈퇴회원검색 - 회원 선택 시 회원정보 창 출력
     def deleted_member_info():
 
-<<<<<<< HEAD
         # 사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
-=======
-        #사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
 
@@ -1232,7 +825,6 @@ def deleted_member_search():
         meminfowindow.configure(bg='LightSkyBlue1')
 
         # 탈퇴회원정보 인덱스 표시할 레이블
-<<<<<<< HEAD
         infonamelabel = Label(meminfowindow, text='회원명', bg='LightSkyBlue1')
         infodatelabel = Label(meminfowindow, text='생년월일', bg='LightSkyBlue1')
         infogenderlabel = Label(meminfowindow, text='성별', bg='LightSkyBlue1')
@@ -1242,22 +834,10 @@ def deleted_member_search():
         # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try:
             if math.isnan(imagefilename) == False:
-=======
-        infonamelabel = Label(meminfowindow, text='회원명',  bg='LightSkyBlue1')
-        infodatelabel = Label(meminfowindow, text='생년월일',  bg='LightSkyBlue1')
-        infogenderlabel = Label(meminfowindow, text='성별',  bg='LightSkyBlue1')
-        infoTELlabel = Label(meminfowindow, text='전화번호',  bg='LightSkyBlue1')
-        infoemaillabel = Label(meminfowindow, text='이메일',  bg='LightSkyBlue1')
-
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
                 meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
-<<<<<<< HEAD
             else:
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
@@ -1272,20 +852,6 @@ def deleted_member_search():
                               anchor='w')
         infogenderinput = Label(meminfowindow, text=df_delmem['Member_GENDER'].loc[Tel], width=25, bg='white',
                                 anchor='w')
-=======
-            else :
-                infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
-
-        except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
-
-        # 탈퇴회원정보(실제 회원 정보) 표시할 레이블
-        infonameinput = Label(meminfowindow, text=df_delmem['Member_NAME'].loc[Tel], width=25, bg='white', anchor='w')
-        infodateinput = Label(meminfowindow, text=df_delmem['Member_BIRTHDATE'].loc[Tel], width=25, bg='white', anchor='w')
-        infogenderinput = Label(meminfowindow, text=df_delmem['Member_GENDER'].loc[Tel], width=25, bg='white', anchor='w')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
         infoTELinput = Label(meminfowindow, text=df_delmem['Member_TEL'].loc[Tel], width=25, bg='white', anchor='w')
         infoemailinput = Label(meminfowindow, text=df_delmem['Member_EMAIL'].loc[Tel], width=25, bg='white', anchor='w')
 
@@ -1309,7 +875,6 @@ def deleted_member_search():
 
         # 창 닫기 버튼 위치 지정
         infoclosebutton.place(x=440, y=250)
-<<<<<<< HEAD
 
     # 탈퇴회원정보 - 끝
 
@@ -1320,17 +885,6 @@ def deleted_member_search():
     # csv 파일 불러오기
     df_member = pd.read_csv("Member.csv", encoding='UTF-8-sig')
     df_delmem = df_member.loc[df_member['Member_DEL_MEM'] == True]
-=======
-    #탈퇴회원정보 - 끝
-    
-    # 탈퇴회원검색 - 회원정보 표(treeview) 회원 더블클릭시 이벤트
-    def deleted_member_info_dbclick(event):
-        deleted_member_info()
-            
-    #csv 파일 불러오기
-    df_member = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-    df_delmem = df_member.loc[df_member['Member_DEL_MEM']==True]
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     df_delmem = df_delmem.set_index(df_delmem['Member_TEL'])
 
     # 탈퇴회원검색 창 생성
@@ -1341,11 +895,7 @@ def deleted_member_search():
 
     # 이름, 전화번호 기입 파트 레이블/엔트리
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
-<<<<<<< HEAD
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
-=======
-    TELlabel = Label(memsearchwindow, text='전화번호',  bg='LightSkyBlue1')
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     nameinput = Entry(memsearchwindow, width=30)
     TELinput = Entry(memsearchwindow, width=30)
 
@@ -1363,11 +913,7 @@ def deleted_member_search():
     # for i in range(5):
     #     resultlist[i] = Label(resultframe, text=resultlist[i])
 
-<<<<<<< HEAD
     # 회원정보 표시할 표 생성
-=======
-    #회원정보 표시할 표 생성
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', deleted_member_info_dbclick)
@@ -1402,10 +948,4 @@ def deleted_member_search():
 
     # resultbox.place(x=25, y=172)
 
-<<<<<<< HEAD
 # --회원끝
-=======
-    
-
-#--회원끝
->>>>>>> 2c1b11e6647d9c8ad450ab3a8e4efc5c26fb060b
