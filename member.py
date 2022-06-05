@@ -941,11 +941,6 @@ def deleted_member_search():
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
 
-    # treeview(표)로 대체
-    # resultframe.place(x=25, y=150)
-    # for result in resultlist:
-    #     result.pack(side=LEFT, padx=30)
 
-    # resultbox.place(x=25, y=172)
 
 # --회원끝
