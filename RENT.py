@@ -5,6 +5,7 @@ from functools import partial
 import tkinter.ttk
 import datetime
 
+
 #-- 대여시작
 def member_info_rent_dbclick(event):
     clickRentBook()
@@ -15,19 +16,22 @@ def clickRentUser():
             treeview.delete(row)
         
         #이름, 전화번호로 회원 검색
+
         name = nameinput.get()
         global tel
         tel = TELinput.get()
         df_namelist = list(df_member['Member_NAME'])
         df_tellist = list(df_member['Member_TEL'])
 
-        if (name in df_namelist and tel in df_tellist) or\
-           (name in df_namelist and tel=='') or\
-           (name=='' and tel in df_tellist) :
+        if (name in df_namelist and tel in df_tellist) or \
+                (name in df_namelist and tel == '') or \
+                (name == '' and tel in df_tellist):
             datalist = []
+
             if tel == '' :
                 df_search = df_member.loc[df_member['Member_NAME']==name]
                 for i in range(len(df_search.index)) :
+
                     datalist.append([df_search['Member_TEL'].iloc[i], \
                                      df_search['Member_NAME'].iloc[i], \
                                      df_search['Member_BIRTHDATE'].iloc[i], \
@@ -43,6 +47,7 @@ def clickRentUser():
                                  df_search['Member_GENDER'].iloc[i], \
                                  df_search['Member_EMAIL'].iloc[i]])
 
+
             else :
                 df_search = df_member.loc[df_member['Member_TEL']==tel]
                 for i in range(len(df_search.index)) :
@@ -55,24 +60,51 @@ def clickRentUser():
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
 
-        else :
+        else:
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
 
-        #회원 선택(더블클릭 이벤트)
+        # 회원 선택(더블클릭 이벤트)
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
 
     # 회원검색 창 생성
+
     windowRentUser   = Tk()
     windowRentUser  .title('도서대여(회원검색)')
     windowRentUser  .geometry('600x400')
     windowRentUser  .configure(bg='LightSkyBlue1')
 
     # 이름, 전화번호 기입 파트 레이블/엔트리
-    namelabel = Label(windowRentUser  , text='회원명' , bg='LightSkyBlue1')
-    TELlabel = Label(windowRentUser   , text='전화번호',  bg='LightSkyBlue1')
-    nameinput = Entry(windowRentUser  , width=30)
-    TELinput = Entry(windowRentUser  , width=30)
+    namelabel = Label(windowRentUser, text='회원명', bg='LightSkyBlue1')
+    TELlabel = Label(windowRentUser, text='전화번호', bg='LightSkyBlue1')
+    nameinput = Entry(windowRentUser, width=30)
+    TELinput = Entry(windowRentUser, width=30)
+
+    df_member = pd.read_csv('Member.csv', encoding='utf-8-sig')
+
+    treeview = tkinter.ttk.Treeview(windowRentUser, \
+                                    columns=["1", "2", "3", "4", "5"], \
+                                    show='headings')
+    treeview.pack()
+    treeview.bind('<Double-Button-1>', member_info_rent_dbclick)
+
+    # 각 컬럼 설정. 컬럼 이름, 컬럼 넓이, 정렬 등
+    treeview.column("#1", width=100, )
+    treeview.heading("1", text="전화번호")
+
+    treeview.column("2", width=100, anchor="center")
+    treeview.heading("2", text="이름", anchor="center")
+
+    treeview.column("3", width=100, anchor="center")
+    treeview.heading("3", text="생년월일", anchor="center")
+
+    treeview.column("4", width=80, anchor="center")
+    treeview.heading("4", text="성별", anchor="center")
+
+    treeview.column("5", width=120, anchor="center")
+    treeview.heading("5", text="이메일", anchor="center")
+
+    treeview.place(x=25, y=150)
 
     df_member = pd.read_csv('Member.csv', encoding = 'cp949')
     
@@ -101,6 +133,7 @@ def clickRentUser():
     treeview.place(x=25, y=150)
 
     # 검색 버튼
+
     searchbutton = Button(windowRentUser  , text="검색", width=10, \
                           command=clickMemberSearch)
 
@@ -110,6 +143,7 @@ def clickRentUser():
     TELlabel.place(x=30, y=60)
     TELinput.place(x=120, y=60)
     searchbutton.place(x=350, y=20)
+
 
 def clickRentBook():
     def clickRent(event):
@@ -140,17 +174,17 @@ def clickRentBook():
         rent_date = datetime.date.today().isoformat()
         rent_return_date = datetime.date.today() + datetime.timedelta(days=14)
 
-        new_rent = { "BOOK_ISBN": isbn,\
-                     "USER_PHONE": phone,\
-                     "RENT_DATE": rent_date,\
-                     "RENT_RETURN_DATE": rent_return_date,\
-                     "RENT_RETURN_YN": None }
+        new_rent = {"BOOK_ISBN": isbn, \
+                    "USER_PHONE": phone, \
+                    "RENT_DATE": rent_date, \
+                    "RENT_RETURN_DATE": rent_return_date, \
+                    "RENT_RETURN_YN": None}
 
         df_rent = df_rent.append(new_rent, ignore_index=True)
         df_rent.to_csv('RENT.csv', index=False, encoding='UTF-8-sig')
 
         windowRentBook.destroy()
-    
+
     windowRentBook = Tk()
     windowRentBook.geometry("900x350")
     windowRentBook.title("도서 대여")
@@ -186,14 +220,16 @@ def clickRentBook():
 
     treeview.place(x=25, y=25)
 
-    #책 데이터
+    # 책 데이터
     df_book = pd.read_csv("Book.csv", encoding='utf-8-sig')
     df_book = df_book.set_index(df_book['BOOK_ISBN'])
-    
-    #대여 가능 상태인 도서 데이터만 표로 출력
+    print(1)
+    # 대여 가능 상태인 도서 데이터만 표로 출력
     can = []
+
     df_book_can = df_book.loc[df_book['BOOK_RENT']==False]
     for i in range(len(df_book_can.index)) :
+
         can.append([df_book_can['BOOK_ISBN'].iloc[i], \
                     df_book_can['BOOK_TITLE'].iloc[i], \
                     df_book_can['BOOK_AUTHOR'].iloc[i], \
@@ -202,8 +238,10 @@ def clickRentBook():
                     df_book_can['BOOK_LINK'].iloc[i], \
                     df_book_can['BOOK_RENT'].iloc[i]])
 
-    for i in range(len(can)) :
+    for i in range(len(can)):
         treeview.insert('', 'end', values=can[i])
+    print(df_book_can)
+    # 더블클릭으로 도서 선택
 
 #-- 대여끝
 
@@ -392,3 +430,4 @@ def clickReturnUser():
 
 
 #-- 반납 끝
+

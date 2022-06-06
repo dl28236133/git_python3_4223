@@ -3,6 +3,12 @@ from tkinter import messagebox
 import pandas as pd
 from functools import partial
 import tkinter.ttk
+import webbrowser
+import os
+import math
+from tkinter.filedialog import *
+import shutil
+from PIL import ImageTk,Image
 
 #--도서 시작
 
@@ -13,7 +19,7 @@ def book_csv():
     except:
         df_book = pd.DataFrame(
             columns=['BOOK_ISBN', 'BOOK_TITLE', 'BOOK_AUTHOR', 'BOOK_PUB', 'BOOK_PRICE', 'BOOK_LINK',
-                     'BOOK_IMAGE', 'BOOK_EX'  ])
+                     'BOOK_IMAGE', 'BOOK_EX' , 'BOOK_RENT'])
         df_book.to_csv('Book.csv', index=False, encoding='UTF-8-sig')
 
 # 버튼 눌렀을 때 나오는 메세지 박스 코드
@@ -34,9 +40,30 @@ def fix_btn():
 
 def fix2_btn():
     messagebox.showinfo("삭제", "삭제완료")
-
+global check
 # 새 책 추가
 def Book_add():
+    def find_book():
+        df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
+        df_book = df_book.set_index(df_book['BOOK_ISBN'])
+
+        check_ISBN = int(entry1.get())
+        IsbnList = list(df_book['BOOK_ISBN'])
+        if (check_ISBN in IsbnList):
+            messagebox.showinfo("중복", "이미 등록된 도서입니다.")
+        else:
+            messagebox.showinfo("등록가능", "등록이 가능한 도서입니다.")
+            button1.config(state ="normal")
+
+
+    def image_btn():
+        imagename = askopenfilename(parent=newWindow, initialdir="image",
+                                    filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
+        imagename_onlyfilename = 'image/' + os.path.basename(imagename)
+        shutil.copyfile(imagename, imagename_onlyfilename)
+        entry7.delete(0, 'end')
+        entry7.insert(0, imagename_onlyfilename)
+
 
     def add_book():
         # csv 불러오기
@@ -50,7 +77,7 @@ def Book_add():
                      'BOOK_LINK' : entry6.get(),
                      "BOOK_IMAGE" : entry7.get(),
                      "BOOK_EX" : entry8.get(),
-                     "BOOK_RENT" : 'X'
+                     "BOOK_RENT" : False
         }
         df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
         df_book = df_book.set_index(df_book['BOOK_ISBN'])
@@ -78,9 +105,11 @@ def Book_add():
     Label(newWindow, text='정보페이지 URL : ', bg='LightSkyBlue1').place(x=20, y=160)
     Label(newWindow, text='도서 사진 : ', bg='LightSkyBlue1').place(x=20, y=190)
     Label(newWindow, text='도서 설명 : ', bg='LightSkyBlue1').place(x=20, y=220)
-    Button(newWindow, text='찾기', command=find_book2, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
-    Button(newWindow, text='추가', command= add_book,
-           width=8, height=1, bg='LightSkyBlue1').place(x=300, y=220)
+    Button(newWindow, text='찾기', command=image_btn, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
+    button1 = Button(newWindow, text='추가', command= add_book,
+           width=8, height=1, bg='LightSkyBlue1')
+    button1.place(x=300, y=220)
+    button1.config(state ="disabled")
 
     entry1 = Entry(newWindow, width=25)
     entry2 = Entry(newWindow, width=30)
@@ -116,11 +145,15 @@ def Book_search():
 
         Namelist = list(df_book['BOOK_TITLE'])
         Autlist = list(df_book['BOOK_AUTHOR'])
+        """
+        if BookName != '':
+            BookName = [ i for i in Namelist if BookName in i]
+        if AuthorName != '':
+            AuthorName = [s for s in Autlist if AuthorName in s]
+        """
 
-
-        if (BookName in Namelist and AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
+        if (BookName in Namelist or AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
                 BookName == '' and AuthorName in Autlist):
-
             datalist = []
             if AuthorName == '':
                 df_search = df_book.loc[df_book['BOOK_TITLE'] == BookName]
@@ -163,18 +196,31 @@ def Book_search():
         AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
         PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
-        URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='관련 링크 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
-        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+        B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
+
+        try :
+            if(df_book["BOOK_IMAGE"].loc[B_ISBN] != "" ):
+                img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+                img = img.resize((140,200) , Image.ANTIALIAS )
+                image = ImageTk.PhotoImage(img, master = bookfix)
+                PHOTO = Label(bookfix, image = image )
+                PHOTO.image = image
+                PHOTO.pack()
+        except:
+            PHOTO = Label(bookfix, width=20, height=13, relief='solid')
+
+
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
         NAMEinput = Label(bookfix, text=df_book["BOOK_TITLE"].loc[B_ISBN], width=20, bg='white', anchor='w')
         AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w' ,fg = 'Blue')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
-
+        B_RENTinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -185,7 +231,7 @@ def Book_search():
         URL.place(x=200, y=220)
         EX.place(x=200, y=260)
         PHOTO.place(x=20, y=20)
-
+        B_RENT.place(x=200, y=300)
 
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
@@ -195,12 +241,16 @@ def Book_search():
         PRICEinput.place(x=290, y=180)
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
+        B_RENTinput.place(x=290, y=300)
+
+        #url 하이퍼링크
+        def callback(url):
+            webbrowser.open_new(url)
+        URLinput.bind("<Button-1>", lambda e: callback(URLinput.cget('text')))
 
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
         Backb.place(x=260, y=350)
-
-
 
 
     searchBook = Tk()
@@ -254,14 +304,14 @@ def Book_search():
     treeview.heading("5", text="가격", anchor="center")
 
     treeview.column("#6", width=150, anchor="center")
-    treeview.heading("6", text="URL", anchor="center")
+    treeview.heading("6", text="대여여부", anchor="center")
 
     # 표에 삽입될 데이터
     treelist = []
     for i in range(len(df_book)):
         treelist.append( (df_book["BOOK_ISBN"].iloc[i], df_book["BOOK_TITLE"].iloc[i],
                           df_book["BOOK_AUTHOR"].iloc[i], df_book["BOOK_PUB"].iloc[i],
-                          df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_LINK"].iloc[i], ) )
+                          df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_RENT"].iloc[i], ) )
 
 
     # 표에 데이터 삽입
@@ -272,11 +322,12 @@ def Book_search():
     treeview.bind('<Double-Button-1>', bookfix_info_dbclick)
 
 
-# 회원 정보 수정
+# 도서 정보 수정
 def bookfix_info():
     df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
     df_book = df_book.set_index(df_book['BOOK_ISBN'])
 
+    #수정- 검색
     def clickSearch():
         for row in treeview.get_children():
             treeview.delete(row)
@@ -314,12 +365,42 @@ def bookfix_info():
             messagebox.showinfo("오류", "잘못된 책이름 또는 저자명입니다.")
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick1)
 
+    #수정- 상세정보
     def bookfix_info_dbclick1(event):
+
+        def image_btn():
+            imagename = askopenfilename(parent=bookfix, initialdir="image",
+                                        filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
+            imagename_onlyfilename = 'image/' + os.path.basename(imagename)
+            shutil.copyfile(imagename, imagename_onlyfilename)
+            PHOTOinput.delete(0, 'end')
+            PHOTOinput.insert(0, imagename_onlyfilename)
+
+        #수정 부분
+        def clickFix():
+
+            df_book["BOOK_ISBN"].loc[B_ISBN] = ISBNinput.get()
+            df_book["BOOK_TITLE"].loc[B_ISBN] = NAMEinput.get()
+            df_book["BOOK_AUTHOR"].loc[B_ISBN] = AUTHORinput.get()
+            df_book["BOOK_PUB"].loc[B_ISBN] = PUBinput.get()
+            df_book["BOOK_PRICE"].loc[B_ISBN] = PRICEinput.get()
+            df_book["BOOK_LINK"].loc[B_ISBN] = URLinput.get()
+            df_book["BOOK_EX"].loc[B_ISBN] = EXinput.get()
+            df_book["BOOK_IMAGE"].loc[B_ISBN] = PHOTOinput.get()
+
+            df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+
+            messagebox.showinfo("수정","수정되었습니다.")
+            bookfix.destroy()
+            searchBook.destroy()
 
         setISBN = treeview.focus()
 
         B_ISBN = (treeview.set(setISBN, column='1'))
         B_ISBN = int(B_ISBN)
+
+        global imagefilename
+        imagefilename = df_book['BOOK_IMAGE'].loc[B_ISBN]
 
         bookfix = Tk()
         bookfix.title('도서 정보 관리')
@@ -333,15 +414,39 @@ def bookfix_info():
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
         URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
-        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+        B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
 
-        ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        NAMEinput = Label(bookfix, text=df_book["BOOK_TITLE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        try:
+            if (df_book["BOOK_IMAGE"].loc[B_ISBN] != ""):
+                img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+                img = img.resize((140, 200), Image.ANTIALIAS)
+                image = ImageTk.PhotoImage(img, master=bookfix)
+                PHOTO = Label(bookfix, image=image)
+                PHOTO.image = image
+                PHOTO.pack()
+        except:
+            PHOTO = Label(bookfix, width=20, height=13, relief='solid')
+
+        ISBNinput = Entry(bookfix)
+        ISBNinput.insert(0 , df_book["BOOK_ISBN"].loc[B_ISBN])
+        NAMEinput = Entry(bookfix)
+        NAMEinput.insert(0, df_book["BOOK_TITLE"].loc[B_ISBN])
+        AUTHORinput = Entry(bookfix)
+        AUTHORinput.insert(0, df_book["BOOK_AUTHOR"].loc[B_ISBN])
+        PUBinput = Entry(bookfix)
+        PUBinput.insert(0, df_book["BOOK_PUB"].loc[B_ISBN])
+        PRICEinput = Entry(bookfix)
+        PRICEinput.insert(0, df_book["BOOK_PRICE"].loc[B_ISBN])
+        URLinput = Entry(bookfix)
+        URLinput.insert(0, df_book["BOOK_LINK"].loc[B_ISBN])
+        EXinput = Entry(bookfix)
+        EXinput.insert(0, df_book["BOOK_EX"].loc[B_ISBN])
+        B_RENTinput = Entry(bookfix)
+        B_RENTinput.insert(0, df_book["BOOK_RENT"].loc[B_ISBN])
+        PHOTOinput = Entry(bookfix)
+        PHOTOinput.insert(0 , df_book["BOOK_IMAGE"].loc[B_ISBN])
+
+        PHOTOinput.pack_forget()
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -352,6 +457,8 @@ def bookfix_info():
         URL.place(x=200, y=220)
         EX.place(x=200, y=260)
         PHOTO.place(x=20, y=20)
+        B_RENT.place(x=200, y=300)
+
 
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
@@ -361,16 +468,17 @@ def bookfix_info():
         PRICEinput.place(x=290, y=180)
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
+        B_RENTinput.place(x=290, y=300)
 
-        fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
-        Backf = Button(bookfix, text='수정', command=bookfix.destroy)
+
+
+        fixphotob = Button(bookfix, text='이미지 변경', command=image_btn)
+        fixbutton = Button(bookfix, text='수정', command=clickFix)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
-        fixphotob.place(x=55, y=220)
-        Backf.place(x=200, y=350)
+        fixphotob.place(x=55, y=230)
+        fixbutton.place(x=200, y=350)
         Backb.place(x=260, y=350)
-
-
 
     searchBook = Tk()
     searchBook.geometry("850x400")
@@ -402,7 +510,7 @@ def bookfix_info():
     treeview.pack()
 
     # 각 컬럼 설정. 컬럼 이름, 컬럼 넓이, 정렬 등
-    treeview.column("#0", width=80, )
+    treeview.column("#0", width=80)
     treeview.heading("#0", text="index")
 
     treeview.column("#1", width=100, anchor="center")
@@ -421,14 +529,14 @@ def bookfix_info():
     treeview.heading("5", text="가격", anchor="center")
 
     treeview.column("#6", width=150, anchor="center")
-    treeview.heading("6", text="URL", anchor="center")
+    treeview.heading("6", text="대여 여부", anchor="center")
 
     # 표에 삽입될 데이터
     treelist = []
     for i in range(len(df_book)):
         treelist.append((df_book["BOOK_ISBN"].iloc[i], df_book["BOOK_TITLE"].iloc[i],
                          df_book["BOOK_AUTHOR"].iloc[i], df_book["BOOK_PUB"].iloc[i],
-                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_LINK"].iloc[i],))
+                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_RENT"].iloc[i],))
 
     # 표에 데이터 삽입
     for i in range(len(treelist)):
@@ -482,11 +590,25 @@ def bookdel_info():
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick2)
 
     def bookfix_info_dbclick2(event):
+        def bookdel():
+            del_index = df_book[df_book['BOOK_ISBN'] == B_ISBN].index
+            df_book.drop(del_index, inplace=True)
+
+            df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+
+
+            messagebox.showinfo("삭제", "삭제되었습니다.")
+            bookfix.destroy()
+            searchBook.destroy()
+
 
         setISBN = treeview.focus()
 
         B_ISBN = (treeview.set(setISBN, column='1'))
         B_ISBN = int(B_ISBN)
+
+        global imagefilename
+        imagefilename = df_book['BOOK_IMAGE'].loc[B_ISBN]
 
         bookfix = Tk()
         bookfix.title('도서 정보 관리')
@@ -498,17 +620,28 @@ def bookdel_info():
         AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
         PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
-        URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
-        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+        B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
+        try:
+            if (df_book["BOOK_IMAGE"].loc[B_ISBN] != ""):
+                img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+                img = img.resize((140, 200), Image.ANTIALIAS)
+                image = ImageTk.PhotoImage(img, master=bookfix)
+                PHOTO = Label(bookfix, image=image)
+                PHOTO.image = image
+                PHOTO.pack()
+        except:
+            PHOTO = Label(bookfix, width=20, height=13, relief='solid')
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
         NAMEinput = Label(bookfix, text=df_book["BOOK_TITLE"].loc[B_ISBN], width=20, bg='white', anchor='w')
         AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        B_RENTinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -519,6 +652,7 @@ def bookdel_info():
         URL.place(x=200, y=220)
         EX.place(x=200, y=260)
         PHOTO.place(x=20, y=20)
+        B_RENT.place(x=200, y = 300)
 
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
@@ -528,12 +662,11 @@ def bookdel_info():
         PRICEinput.place(x=290, y=180)
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
+        B_RENTinput.place(x=290, y=300)
 
-        fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
-        Backf = Button(bookfix, text='삭제', command=bookfix.destroy)
+        Backf = Button(bookfix, text='삭제', command=bookdel)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
-        fixphotob.place(x=55, y=220)
         Backf.place(x=200, y=350)
         Backb.place(x=260, y=350)
 
@@ -588,14 +721,14 @@ def bookdel_info():
     treeview.heading("5", text="가격", anchor="center")
 
     treeview.column("#6", width=150, anchor="center")
-    treeview.heading("6", text="URL", anchor="center")
+    treeview.heading("6", text="대여 여부", anchor="center")
 
     # 표에 삽입될 데이터
     treelist = []
     for i in range(len(df_book)):
         treelist.append((df_book["BOOK_ISBN"].iloc[i], df_book["BOOK_TITLE"].iloc[i],
                          df_book["BOOK_AUTHOR"].iloc[i], df_book["BOOK_PUB"].iloc[i],
-                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_LINK"].iloc[i],))
+                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_RENT"].iloc[i],))
 
     # 표에 데이터 삽입
     for i in range(len(treelist)):

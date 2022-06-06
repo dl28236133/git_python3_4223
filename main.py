@@ -35,7 +35,7 @@ def main_UI():
     RentMenu = Menu(mainMenu)
     mainMenu.add_cascade(label='도서대여', menu=RentMenu)
     RentMenu.add_command(label='도서대여', command=clickRentUser)
-    RentMenu.add_command(label='도서반납', command=clickReturnUser)
+    #RentMenu.add_command(label='도서반납', command=clickReturnUser)
 
     SettingMenu = Menu(mainMenu)
     mainMenu.add_cascade(label='환경설정', menu=SettingMenu)
