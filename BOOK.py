@@ -40,9 +40,22 @@ def fix_btn():
 
 def fix2_btn():
     messagebox.showinfo("삭제", "삭제완료")
-
+global check
 # 새 책 추가
 def Book_add():
+    def find_book():
+        df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
+        df_book = df_book.set_index(df_book['BOOK_ISBN'])
+
+        check_ISBN = int(entry1.get())
+        IsbnList = list(df_book['BOOK_ISBN'])
+        if (check_ISBN in IsbnList):
+            messagebox.showinfo("중복", "이미 등록된 도서입니다.")
+        else:
+            messagebox.showinfo("등록가능", "등록이 가능한 도서입니다.")
+            button1.config(state ="normal")
+
+
     def image_btn():
         imagename = askopenfilename(parent=newWindow, initialdir="image",
                                     filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
@@ -93,8 +106,10 @@ def Book_add():
     Label(newWindow, text='도서 사진 : ', bg='LightSkyBlue1').place(x=20, y=190)
     Label(newWindow, text='도서 설명 : ', bg='LightSkyBlue1').place(x=20, y=220)
     Button(newWindow, text='찾기', command=image_btn, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
-    Button(newWindow, text='추가', command= add_book,
-           width=8, height=1, bg='LightSkyBlue1').place(x=300, y=220)
+    button1 = Button(newWindow, text='추가', command= add_book,
+           width=8, height=1, bg='LightSkyBlue1')
+    button1.place(x=300, y=220)
+    button1.config(state ="disabled")
 
     entry1 = Entry(newWindow, width=25)
     entry2 = Entry(newWindow, width=30)
@@ -353,6 +368,14 @@ def bookfix_info():
     #수정- 상세정보
     def bookfix_info_dbclick1(event):
 
+        def image_btn():
+            imagename = askopenfilename(parent=bookfix, initialdir="image",
+                                        filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
+            imagename_onlyfilename = 'image/' + os.path.basename(imagename)
+            shutil.copyfile(imagename, imagename_onlyfilename)
+            PHOTOinput.delete(0, 'end')
+            PHOTOinput.insert(0, imagename_onlyfilename)
+
         #수정 부분
         def clickFix():
 
@@ -363,6 +386,7 @@ def bookfix_info():
             df_book["BOOK_PRICE"].loc[B_ISBN] = PRICEinput.get()
             df_book["BOOK_LINK"].loc[B_ISBN] = URLinput.get()
             df_book["BOOK_EX"].loc[B_ISBN] = EXinput.get()
+            df_book["BOOK_IMAGE"].loc[B_ISBN] = PHOTOinput.get()
 
             df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
 
@@ -419,6 +443,10 @@ def bookfix_info():
         EXinput.insert(0, df_book["BOOK_EX"].loc[B_ISBN])
         B_RENTinput = Entry(bookfix)
         B_RENTinput.insert(0, df_book["BOOK_RENT"].loc[B_ISBN])
+        PHOTOinput = Entry(bookfix)
+        PHOTOinput.insert(0 , df_book["BOOK_IMAGE"].loc[B_ISBN])
+
+        PHOTOinput.pack_forget()
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -431,6 +459,7 @@ def bookfix_info():
         PHOTO.place(x=20, y=20)
         B_RENT.place(x=200, y=300)
 
+
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
         NAMEinput.place(x=290, y=60)
@@ -442,7 +471,8 @@ def bookfix_info():
         B_RENTinput.place(x=290, y=300)
 
 
-        fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
+
+        fixphotob = Button(bookfix, text='이미지 변경', command=image_btn)
         fixbutton = Button(bookfix, text='수정', command=clickFix)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
