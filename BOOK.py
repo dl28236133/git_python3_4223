@@ -171,9 +171,6 @@ def Book_search():
         B_ISBN = (treeview.set(setISBN, column='1'))
         B_ISBN = int(B_ISBN)
 
-        global imagefilename
-        imagefilename = df_book['BOOK_IMAGE'].loc[B_ISBN]
-
         bookfix = Tk()
         bookfix.title('도서 정보 관리')
         bookfix.geometry('500x400')
@@ -184,17 +181,20 @@ def Book_search():
         AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
         PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
-        URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='관련 링크 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
 
-
-        img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
-        img = img.resize((140,200) , Image.ANTIALIAS )
-        print(df_book["BOOK_IMAGE"].loc[B_ISBN])
-        image = ImageTk.PhotoImage(img, master = bookfix)
-        PHOTO = Label(bookfix, image = image ,width = 140 )
-        PHOTO.pack()
+        try :
+            if(df_book["BOOK_IMAGE"].loc[B_ISBN] != "" ):
+                img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+                img = img.resize((140,200) , Image.ANTIALIAS )
+                image = ImageTk.PhotoImage(img, master = bookfix)
+                PHOTO = Label(bookfix, image = image )
+                PHOTO.image = image
+                PHOTO.pack()
+        except:
+            PHOTO = Label(bookfix, width=20, height=13, relief='solid')
 
 
 
@@ -203,7 +203,7 @@ def Book_search():
         AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w' ,fg = 'Blue')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
         B_RENTinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
@@ -391,7 +391,17 @@ def bookfix_info():
         URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
-        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+
+        try:
+            if (df_book["BOOK_IMAGE"].loc[B_ISBN] != ""):
+                img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+                img = img.resize((140, 200), Image.ANTIALIAS)
+                image = ImageTk.PhotoImage(img, master=bookfix)
+                PHOTO = Label(bookfix, image=image)
+                PHOTO.image = image
+                PHOTO.pack()
+        except:
+            PHOTO = Label(bookfix, width=20, height=13, relief='solid')
 
         ISBNinput = Entry(bookfix)
         ISBNinput.insert(0 , df_book["BOOK_ISBN"].loc[B_ISBN])
@@ -436,7 +446,7 @@ def bookfix_info():
         fixbutton = Button(bookfix, text='수정', command=clickFix)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
-        fixphotob.place(x=55, y=220)
+        fixphotob.place(x=55, y=230)
         fixbutton.place(x=200, y=350)
         Backb.place(x=260, y=350)
 
@@ -583,7 +593,16 @@ def bookdel_info():
         URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
-        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+        try:
+            if (df_book["BOOK_IMAGE"].loc[B_ISBN] != ""):
+                img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+                img = img.resize((140, 200), Image.ANTIALIAS)
+                image = ImageTk.PhotoImage(img, master=bookfix)
+                PHOTO = Label(bookfix, image=image)
+                PHOTO.image = image
+                PHOTO.pack()
+        except:
+            PHOTO = Label(bookfix, width=20, height=13, relief='solid')
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
         NAMEinput = Label(bookfix, text=df_book["BOOK_TITLE"].loc[B_ISBN], width=20, bg='white', anchor='w')
@@ -615,11 +634,9 @@ def bookdel_info():
         EXinput.place(x=290, y=260)
         B_RENTinput.place(x=290, y=300)
 
-        fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
         Backf = Button(bookfix, text='삭제', command=bookdel)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
-        fixphotob.place(x=55, y=220)
         Backf.place(x=200, y=350)
         Backb.place(x=260, y=350)
 
