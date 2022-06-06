@@ -156,48 +156,58 @@ def Book_search():
         BookName = InputBookName.get()
         AuthorName = InputAuthor.get()
 
-        NameValues = df_book[df_book["BOOK_TITLE"].str.contains(BookName)]
-        AuthorValues = df_book[df_book["BOOK_AUTHOR"].str.contains(AuthorName)]
-        print(AuthorValues)
-        print(NameValues)
-        datalist = []
+        if BookName == '':
+            nameresultlist = [None]
 
-        for i in range(len(NameValues.index)):
-            datalist.append([NameValues['BOOK_ISBN'].iloc[i], NameValues['BOOK_TITLE'].iloc[i],
-                                     NameValues['BOOK_AUTHOR'].iloc[i],
-                                     NameValues['BOOK_PUB'].iloc[i], NameValues['BOOK_PRICE'].iloc[i],
-                                     NameValues['BOOK_RENT'].iloc[i]])
-        for j in range(len(datalist)):
-            treeview.insert('', 'end', text=i, values=datalist[j])
+        else:
+            df_search = df_book[df_book['BOOK_TITLE'].str.contains(BookName, case = False)]
+            nameresultlist = list(df_search['BOOK_TITLE'])
 
-        """
-        if (BookName in Namelist and AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
-                BookName == '' and AuthorName in Autlist):
+        if AuthorName == '':
+            telresultlist = [None]
+
+        else:
+            df_search = df_book[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)]
+            telresultlist = list(df_search['BOOK_AUTHOR'])
+
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
 
             datalist = []
             if AuthorName == '':
-                df_search = df_book.loc[df_book['BOOK_TITLE'].str.contains(BookName)]
-                print(df_search)
+                df_search = df_book.loc[df_book['BOOK_TITLE'].str.contains(BookName, case = False)]
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
                                      df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                     df_search['BOOK_LINK'].iloc[i]])
+                                     df_search['BOOK_RENT'].iloc[i]])
+
+            elif BookName == '':
+                df_search = df_book.loc[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
+                                     df_search['BOOK_AUTHOR'].iloc[i],
+                                     df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
+                                     df_search['BOOK_RENT'].iloc[i]])
 
             else:
-                df_search = df_book.loc[df_book['BOOK_AUTHOR'] == AuthorName]
+                df_search = df_book.loc[
+                    (df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)) & (df_book['BOOK_TITLE'].str.contains(BookName, case = False))]
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
                                      df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                     df_search['BOOK_LINK'].iloc[i]])
-            treeview.place(x=25, y=100)
+                                     df_search['BOOK_RENT'].iloc[i]])
+
             for j in range(len(datalist)):
-                treeview.insert('', 'end', text=i, values=datalist[j])
+                treeview.insert('', 'end',text = j, values=datalist[j], iid=str(j) + "번")
 
         else:
-            messagebox.showinfo("오류", "잘못된 책이름 또는 저자명입니다.")
-        """
+            messagebox.showinfo("오류", "존재하지 않는 도서이거나, 존재하지 않는 저자입니다.")
+
+
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick)
 
 
@@ -357,34 +367,53 @@ def bookfix_info():
         BookName = InputBookName.get()
         AuthorName = InputAuthor.get()
 
-        Namelist = list(df_book['BOOK_TITLE'])
-        Autlist = list(df_book['BOOK_AUTHOR'])
+        if BookName == '':
+            nameresultlist = [None]
 
-        if (BookName in Namelist and AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
-                BookName == '' and AuthorName in Autlist):
+        else:
+            df_search = df_book[df_book['BOOK_TITLE'].str.contains(BookName, case = False)]
+            nameresultlist = list(df_search['BOOK_TITLE'])
+
+        if AuthorName == '':
+            telresultlist = [None]
+
+        else:
+            df_search = df_book[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)]
+            telresultlist = list(df_search['BOOK_AUTHOR'])
+
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
 
             datalist = []
             if AuthorName == '':
-                df_search = df_book.loc[df_book['BOOK_TITLE'] == BookName]
+                df_search = df_book.loc[df_book['BOOK_TITLE'].str.contains(BookName, case = False)]
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
                                      df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                     df_search['BOOK_LINK'].iloc[i]])
+                                     df_search['BOOK_RENT'].iloc[i]])
+
+            elif BookName == '':
+                df_search = df_book.loc[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
+                                     df_search['BOOK_AUTHOR'].iloc[i],
+                                     df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
+                                     df_search['BOOK_RENT'].iloc[i]])
 
             else:
-                df_search = df_book.loc[df_book['BOOK_AUTHOR'] == AuthorName]
+                df_search = df_book.loc[
+                    (df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)) & (df_book['BOOK_TITLE'].str.contains(BookName, case = False))]
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
                                      df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                     df_search['BOOK_LINK'].iloc[i]])
-            treeview.place(x=25, y=100)
-            for j in range(len(datalist)):
-                treeview.insert('', 'end', text=i, values=datalist[j])
+                                     df_search['BOOK_RENT'].iloc[i]])
 
-        else:
-            messagebox.showinfo("오류", "잘못된 책이름 또는 저자명입니다.")
+            for j in range(len(datalist)):
+                treeview.insert('', 'end', text=j, values=datalist[j], iid=str(j) + "번")
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick1)
 
     #수정- 상세정보
@@ -399,12 +428,7 @@ def bookfix_info():
             PHOTOinput.insert(0, imagename_onlyfilename)
 
         #수정 부분
-        #check_ISBN = (entry1.get())
-        #if( check_ISBN.isdigit()):
-        #    check_ISBN = int(entry1.get())
-        #    IsbnList = list(df_book['BOOK_ISBN'])
-        #    if (check_ISBN in IsbnList):
-        #        messagebox.showinfo("중복", "이미 등록된 도서입니다.")
+
         def clickFix():
             try:
                 check_ISBN = (ISBNinput.get())
@@ -412,7 +436,9 @@ def bookfix_info():
                     check_ISBN = int(ISBNinput.get())
                     IsbnList = list(df_book['BOOK_ISBN'])
 
-                    if (check_ISBN in IsbnList):
+                    if (df_book["BOOK_ISBN"].loc[B_ISBN] == check_ISBN):
+                        raise
+                    elif (check_ISBN in IsbnList):
                         messagebox.showinfo("중복", "이미 등록된 ISBN입니다.")
                     else:
                         raise
@@ -631,34 +657,53 @@ def bookdel_info():
         BookName = InputBookName.get()
         AuthorName = InputAuthor.get()
 
-        Namelist = list(df_book['BOOK_TITLE'])
-        Autlist = list(df_book['BOOK_AUTHOR'])
+        if BookName == '':
+            nameresultlist = [None]
 
-        if (BookName in Namelist and AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
-                BookName == '' and AuthorName in Autlist):
+        else:
+            df_search = df_book[df_book['BOOK_TITLE'].str.contains(BookName, case = False)]
+            nameresultlist = list(df_search['BOOK_TITLE'])
+
+        if AuthorName == '':
+            telresultlist = [None]
+
+        else:
+            df_search = df_book[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)]
+            telresultlist = list(df_search['BOOK_AUTHOR'])
+
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
 
             datalist = []
             if AuthorName == '':
-                df_search = df_book.loc[df_book['BOOK_TITLE'] == BookName]
+                df_search = df_book.loc[df_book['BOOK_TITLE'].str.contains(BookName, case = False)]
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
                                      df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                     df_search['BOOK_LINK'].iloc[i]])
+                                     df_search['BOOK_RENT'].iloc[i]])
+
+            elif BookName == '':
+                df_search = df_book.loc[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
+                                     df_search['BOOK_AUTHOR'].iloc[i],
+                                     df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
+                                     df_search['BOOK_RENT'].iloc[i]])
 
             else:
-                df_search = df_book.loc[df_book['BOOK_AUTHOR'] == AuthorName]
+                df_search = df_book.loc[
+                    (df_book['BOOK_AUTHOR'].str.contains(AuthorName, case = False)) & (df_book['BOOK_TITLE'].str.contains(BookName, case = False))]
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
                                      df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                     df_search['BOOK_LINK'].iloc[i]])
-            treeview.place(x=25, y=100)
-            for j in range(len(datalist)):
-                treeview.insert('', 'end', text=i, values=datalist[j])
+                                     df_search['BOOK_RENT'].iloc[i]])
 
-        else:
-            messagebox.showinfo("오류", "잘못된 책이름 또는 저자명입니다.")
+            for j in range(len(datalist)):
+                treeview.insert('', 'end', text=j, values=datalist[j], iid=str(j) + "번")
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick2)
 
     def bookfix_info_dbclick2(event):
