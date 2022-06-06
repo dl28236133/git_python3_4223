@@ -188,12 +188,14 @@ def Book_search():
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
 
+
         img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
         img = img.resize((140,200) , Image.ANTIALIAS )
         print(df_book["BOOK_IMAGE"].loc[B_ISBN])
         image = ImageTk.PhotoImage(img, master = bookfix)
         PHOTO = Label(bookfix, image = image ,width = 140 )
         PHOTO.pack()
+
 
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
