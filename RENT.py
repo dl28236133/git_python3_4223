@@ -106,7 +106,7 @@ def clickRentUser():
 
     treeview.place(x=25, y=150)
 
-    df_member = pd.read_csv('Member.csv', encoding = 'cp949')
+    df_member = pd.read_csv('Member.csv', encoding = 'utf-8-sig')
     
     treeview = tkinter.ttk.Treeview(windowRentUser, \
                                     columns=["1", "2", "3" , "4" , "5"], \
@@ -391,7 +391,7 @@ def clickReturnUser():
     nameinput = Entry(windowReturnUser  , width=30)
     TELinput = Entry(windowReturnUser  , width=30)
 
-    df_member = pd.read_csv('Member.csv', encoding = 'cp949')
+    df_member = pd.read_csv('Member.csv', encoding = 'utf-8-sig')
     
     treeview = tkinter.ttk.Treeview(windowReturnUser, \
                                     columns=["1", "2", "3" , "4" , "5"], \
