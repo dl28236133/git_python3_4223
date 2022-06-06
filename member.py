@@ -231,7 +231,8 @@ def member_register():
     
     # 회원등록 - 등록 버튼 클릭 시
     def regi_btn():
-        df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
+        df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
+        df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
         df_member = df_member.set_index(df_member['Member_TEL'])
 
         regiTELinput = regiTELinput1.get()+'-'+regiTELinput2.get()+'-'+regiTELinput3.get()
@@ -254,6 +255,7 @@ def member_register():
         except :
             if regiTELinput1.get()=='' and regiTELinput2.get()=='' and regiTELinput3.get()=='' :
                 messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
+                
 
             else :
                 messagebox.showinfo("회원등록실패", "올바른 전화번호 값을 입력하세요.")
@@ -269,23 +271,32 @@ def member_register():
 
             else :
                 messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
+        
+        elif (len(regiTELinput1.get()) !=3 or len(regiTELinput2.get()) !=4 or len(regiTELinput3.get()) !=4) and num == True  :
+            messagebox.showinfo("회원등록실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
 
         else:
             try :
                 if num == True :
                     int(regidateinput.get())
-                    new_member = {"Member_TEL": regiTELinput,
-                                  "Member_NAME": reginameinput.get(),
-                                  "Member_BIRTHDATE": regidateinput.get(),
-                                  "Member_GENDER": gender.get(),
-                                  "Member_EMAIL": regiemailinput.get(),
-                                  "Member_IMAGE": regiphotoinput.get(),
-                                  "Member_DEL_MEM": False}
-                    df_member = df_member.append(new_member,ignore_index=True)
-                    df_member = df_member.set_index(df_member['Member_TEL'])
-                    df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
-                    messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
-                    memregiwindow.destroy()
+
+                    if len(regidateinput.get())!=8 :
+                        messagebox.showinfo("회원등록실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
+                        num = False
+                    
+                    if num == True :
+                        new_member = {"Member_TEL": regiTELinput,
+                                    "Member_NAME": reginameinput.get(),
+                                    "Member_BIRTHDATE": regidateinput.get(),
+                                    "Member_GENDER": gender.get(),
+                                    "Member_EMAIL": regiemailinput.get(),
+                                    "Member_IMAGE": regiphotoinput.get(),
+                                    "Member_DEL_MEM": False}
+                        df_member = df_member.append(new_member,ignore_index=True)
+                        df_member = df_member.set_index(df_member['Member_TEL'])
+                        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                        messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
+                        memregiwindow.destroy()
             
             except :
                 messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
@@ -450,23 +461,33 @@ def member_search_fix():
 
                     else :
                         messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
-                    
-                try :
-                    if num == True :
-                        int(infodateinput.get())
-                        df_member["Member_NAME"].loc[Tel] = infonameinput.get()
-                        df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
-                        df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
-                        df_member["Member_GENDER"].loc[Tel] = gender.get()
-                        df_member["Member_IMAGE"].loc[Tel] = imagefilename
-            
-                        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
-                        messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
-                        meminfowindow.destroy()
+                elif (len(infoTELinput1.get()) !=3 or len(infoTELinput2.get()) !=4 or len(infoTELinput3.get()) !=4) and num == True  :
+                    messagebox.showinfo("회원정보 수정 실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
+                    
+                else :
+                    try :
+                        if num == True :
+                            int(infodateinput.get())
+
+                            if len(infodateinput.get())!=8 :
+                                messagebox.showinfo("회원정보 수정 실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
+                                num = False
+
+                            if num == True :
+                                df_member["Member_NAME"].loc[Tel] = infonameinput.get()
+                                df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                                df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                                df_member["Member_GENDER"].loc[Tel] = gender.get()
+                                df_member["Member_IMAGE"].loc[Tel] = imagefilename
             
-                except :
-                    messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
+                                df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+
+                                messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
+                                meminfowindow.destroy()
+            
+                    except :
+                        messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
      
             elif infoTELinput in list(df_member['Member_TEL']) :
                 messagebox.showinfo("회원정보 수정 실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
@@ -478,21 +499,30 @@ def member_search_fix():
                 else :
                     messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
 
+            elif (len(infoTELinput1.get()) !=3 or len(infoTELinput2.get()) !=4 or len(infoTELinput3.get()) !=4) and num == True  :
+                    messagebox.showinfo("회원정보 수정 실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
+
             else:
                 try :
                     if num == True :
                         int(infodateinput.get())
-                        df_member["Member_TEL"].loc[Tel] = infoTELinput
-                        df_member["Member_NAME"].loc[Tel] = infonameinput.get()
-                        df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
-                        df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
-                        df_member["Member_GENDER"].loc[Tel] = gender.get()
-                        df_member["Member_IMAGE"].loc[Tel] = imagefilename
-            
-                        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
-                        messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
-                        meminfowindow.destroy()
+                        if len(infodateinput.get())!=8 :
+                            messagebox.showinfo("회원등록실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
+                            num = False
+
+                        if num == True :
+                            df_member["Member_TEL"].loc[Tel] = infoTELinput
+                            df_member["Member_NAME"].loc[Tel] = infonameinput.get()
+                            df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                            df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                            df_member["Member_GENDER"].loc[Tel] = gender.get()
+                            df_member["Member_IMAGE"].loc[Tel] = imagefilename
+            
+                            df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+
+                            messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
+                            meminfowindow.destroy()
             
                 except :
                     messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
@@ -811,6 +841,7 @@ def member_search_del():
             else :
                 df_member["Member_DEL_MEM"].loc[Tel] = True
 
+                df_member = df_member.set_index(df_member['Member_TEL'])
                 df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                 messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
