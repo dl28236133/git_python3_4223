@@ -3,6 +3,7 @@ from tkinter import messagebox
 import pandas as pd
 from functools import partial
 import tkinter.ttk
+import webbrowser
 
 #--도서 시작
 
@@ -13,7 +14,7 @@ def book_csv():
     except:
         df_book = pd.DataFrame(
             columns=['BOOK_ISBN', 'BOOK_TITLE', 'BOOK_AUTHOR', 'BOOK_PUB', 'BOOK_PRICE', 'BOOK_LINK',
-                     'BOOK_IMAGE', 'BOOK_EX'  ])
+                     'BOOK_IMAGE', 'BOOK_EX' , 'BOOK_RENT'])
         df_book.to_csv('Book.csv', index=False, encoding='UTF-8-sig')
 
 # 버튼 눌렀을 때 나오는 메세지 박스 코드
@@ -50,7 +51,7 @@ def Book_add():
                      'BOOK_LINK' : entry6.get(),
                      "BOOK_IMAGE" : entry7.get(),
                      "BOOK_EX" : entry8.get(),
-                     "BOOK_RENT" : 'X'
+                     "BOOK_RENT" : False
         }
         df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
         df_book = df_book.set_index(df_book['BOOK_ISBN'])
@@ -175,7 +176,6 @@ def Book_search():
         URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
-
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
         NAME.place(x=200, y=60)
@@ -196,11 +196,14 @@ def Book_search():
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
 
+        #url 하이퍼링크
+        def callback(url):
+            webbrowser.open_new(url)
+        URLinput.bind("<Button-1>", lambda e: callback(URLinput.cget('text')))
+
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
         Backb.place(x=260, y=350)
-
-
 
 
     searchBook = Tk()
@@ -272,11 +275,12 @@ def Book_search():
     treeview.bind('<Double-Button-1>', bookfix_info_dbclick)
 
 
-# 회원 정보 수정
+# 도서 정보 수정
 def bookfix_info():
     df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
     df_book = df_book.set_index(df_book['BOOK_ISBN'])
 
+    #수정- 검색
     def clickSearch():
         for row in treeview.get_children():
             treeview.delete(row)
@@ -314,7 +318,25 @@ def bookfix_info():
             messagebox.showinfo("오류", "잘못된 책이름 또는 저자명입니다.")
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick1)
 
+    #수정- 상세정보
     def bookfix_info_dbclick1(event):
+
+        #수정 부분
+        def clickFix():
+
+            df_book["BOOK_ISBN"].loc[B_ISBN] = ISBNinput.get()
+            df_book["BOOK_TITLE"].loc[B_ISBN] = NAMEinput.get()
+            df_book["BOOK_AUTHOR"].loc[B_ISBN] = AUTHORinput.get()
+            df_book["BOOK_PUB"].loc[B_ISBN] = PUBinput.get()
+            df_book["BOOK_PRICE"].loc[B_ISBN] = PRICEinput.get()
+            df_book["BOOK_LINK"].loc[B_ISBN] = URLinput.get()
+            df_book["BOOK_EX"].loc[B_ISBN] = EXinput.get()
+
+            df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+
+            messagebox.showinfo("수정","수정되었습니다.")
+            bookfix.destroy()
+            searchBook.destroy()
 
         setISBN = treeview.focus()
 
@@ -335,13 +357,20 @@ def bookfix_info():
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         PHOTO = Label(bookfix, width=20, height=12, relief='solid')
 
-        ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        NAMEinput = Label(bookfix, text=df_book["BOOK_TITLE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        ISBNinput = Entry(bookfix)
+        ISBNinput.insert(0 , df_book["BOOK_ISBN"].loc[B_ISBN])
+        NAMEinput = Entry(bookfix)
+        NAMEinput.insert(0, df_book["BOOK_TITLE"].loc[B_ISBN])
+        AUTHORinput = Entry(bookfix)
+        AUTHORinput.insert(0, df_book["BOOK_AUTHOR"].loc[B_ISBN])
+        PUBinput = Entry(bookfix)
+        PUBinput.insert(0, df_book["BOOK_PUB"].loc[B_ISBN])
+        PRICEinput = Entry(bookfix)
+        PRICEinput.insert(0, df_book["BOOK_PRICE"].loc[B_ISBN])
+        URLinput = Entry(bookfix)
+        URLinput.insert(0, df_book["BOOK_LINK"].loc[B_ISBN])
+        EXinput = Entry(bookfix)
+        EXinput.insert(0, df_book["BOOK_EX"].loc[B_ISBN])
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -362,16 +391,15 @@ def bookfix_info():
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
 
+
+
         fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
-        Backf = Button(bookfix, text='수정', command=bookfix.destroy)
+        fixbutton = Button(bookfix, text='수정', command=clickFix)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
         fixphotob.place(x=55, y=220)
-        Backf.place(x=200, y=350)
+        fixbutton.place(x=200, y=350)
         Backb.place(x=260, y=350)
-
-
-
     searchBook = Tk()
     searchBook.geometry("850x400")
     searchBook.title("도서 검색")
@@ -402,7 +430,7 @@ def bookfix_info():
     treeview.pack()
 
     # 각 컬럼 설정. 컬럼 이름, 컬럼 넓이, 정렬 등
-    treeview.column("#0", width=80, )
+    treeview.column("#0", width=8)
     treeview.heading("#0", text="index")
 
     treeview.column("#1", width=100, anchor="center")
@@ -482,6 +510,19 @@ def bookdel_info():
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick2)
 
     def bookfix_info_dbclick2(event):
+        def bookdel():
+            del_index = df_book[df_book['BOOK_ISBN'] == B_ISBN].index
+            df_book.drop(del_index, inplace=True)
+            print(del_index)
+            print(df_book)
+
+            df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+
+
+            messagebox.showinfo("삭제", "삭제되었습니다.")
+            bookfix.destroy()
+            searchBook.destroy()
+
 
         setISBN = treeview.focus()
 
@@ -529,8 +570,10 @@ def bookdel_info():
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
 
+
+
         fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
-        Backf = Button(bookfix, text='삭제', command=bookfix.destroy)
+        Backf = Button(bookfix, text='삭제', command=bookdel)
         Backb = Button(bookfix, text='닫기', command=bookfix.destroy)
 
         fixphotob.place(x=55, y=220)
