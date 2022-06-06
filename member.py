@@ -31,25 +31,23 @@ def member_search():
         name = nameinput.get()
         tel = TELinput.get()
 
-        namelist = list(df_member['Member_NAME'])
-        tellist = list(df_member['Member_TEL'])
-
         if name == '' :
-            nameresultlist = []
+            nameresultlist = [None]
 
         else :
             df_search = df_member[df_member['Member_NAME'].str.contains(name)]
             nameresultlist = list(df_search['Member_NAME'])
 
         if tel == '' :
-            telresultlist = []
+            telresultlist = [None]
 
         else :
             df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
-            telresultlist = []
+            telresultlist = list(df_search['Member_TEL'])
 
-       #여기에 조건문 수정 필요
-        if True:
+
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
+            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
@@ -187,6 +185,14 @@ def member_search():
 
     treeview.column("5", width=120, anchor="center")
     treeview.heading("5", text="이메일", anchor="center")
+
+    datalist = []
+    for i in range(len(df_member.index)) :
+        datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
+                         df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+
+    for j in range(len(datalist)) :
+        treeview.insert('', 'end', values=datalist[j])
 
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_btn)
@@ -359,8 +365,23 @@ def member_search_fix():
         name = nameinput.get()
         tel = TELinput.get()
 
-        #여기에 조건문 수정 필요
-        if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
+        if name == '' :
+            nameresultlist = [None]
+
+        else :
+            df_search = df_member[df_member['Member_NAME'].str.contains(name)]
+            nameresultlist = list(df_search['Member_NAME'])
+
+        if tel == '' :
+            telresultlist = [None]
+
+        else :
+            df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
+            telresultlist = list(df_search['Member_TEL'])
+
+
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
+            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
@@ -486,7 +507,23 @@ def member_search_fix():
             name = nameinput.get()
             tel = TELinput.get()
 
-            if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
+            if name == '' :
+                nameresultlist = [None]
+
+            else :
+                df_search = df_member[df_member['Member_NAME'].str.contains(name)]
+                nameresultlist = list(df_search['Member_NAME'])
+
+            if tel == '' :
+                telresultlist = [None]
+
+            else :
+                df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
+                telresultlist = list(df_search['Member_TEL'])
+
+
+            if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
+            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
                 datalist = []
                 if tel == '' :
                     df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
@@ -505,6 +542,12 @@ def member_search_fix():
                     for i in range(len(df_search.index)) :
                         datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
                                 df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            else :
+                datalist = []
+                for i in range(len(df_member.index)) :
+                    datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
+                                     df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
@@ -680,6 +723,14 @@ def member_search_fix():
     treeview.column("5", width=120, anchor="center")
     treeview.heading("5", text="이메일", anchor="center")
 
+    datalist = []
+    for i in range(len(df_member.index)) :
+        datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
+                         df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+
+    for j in range(len(datalist)) :
+        treeview.insert('', 'end', values=datalist[j])
+
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_fix_btn)
 
@@ -703,7 +754,23 @@ def member_search_del():
         name = nameinput.get()
         tel = TELinput.get()
 
-        if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
+        if name == '' :
+            nameresultlist = [None]
+
+        else :
+            df_search = df_member[df_member['Member_NAME'].str.contains(name)]
+            nameresultlist = list(df_search['Member_NAME'])
+
+        if tel == '' :
+            telresultlist = [None]
+
+        else :
+            df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
+            telresultlist = list(df_search['Member_TEL'])
+
+       
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
+            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
@@ -892,6 +959,14 @@ def member_search_del():
     treeview.column("5", width=120, anchor="center")
     treeview.heading("5", text="이메일", anchor="center")
 
+    datalist = []
+    for i in range(len(df_member.index)) :
+        datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
+                         df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+
+    for j in range(len(datalist)) :
+        treeview.insert('', 'end', values=datalist[j])
+
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=search_del_btn)
 
@@ -915,7 +990,23 @@ def deleted_member_search():
         name = nameinput.get()
         tel = TELinput.get()
 
-        if True in list(df_delmem['Member_NAME'].str.contains(name)) or True in list(df_delmem['Member_TEL'].str.contains(tel)) :
+        if name == '' :
+            nameresultlist = [None]
+
+        else :
+            df_search = df_delmem[df_delmem['Member_NAME'].str.contains(name)]
+            nameresultlist = list(df_search['Member_NAME'])
+
+        if tel == '' :
+            telresultlist = [None]
+
+        else :
+            df_search = df_delmem[df_delmem['Member_TEL'].str.contains(tel)]
+            telresultlist = list(df_search['Member_TEL'])
+
+    
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
+            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
@@ -949,7 +1040,7 @@ def deleted_member_search():
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
 
-        global imagefilenamememinfophot
+        global imagefilename
         imagefilename = df_delmem['Member_IMAGE'].loc[Tel]
 
         # 탈퇴회원정보 창 생성
@@ -1056,6 +1147,14 @@ def deleted_member_search():
 
     treeview.column("5", width=120, anchor="center")
     treeview.heading("5", text="이메일", anchor="center")
+
+    datalist = []
+    for i in range(len(df_delmem.index)) :
+        datalist.append([df_delmem['Member_TEL'].iloc[i], df_delmem['Member_NAME'].iloc[i], df_delmem['Member_BIRTHDATE'].iloc[i], 
+                         df_delmem['Member_GENDER'].iloc[i], df_delmem['Member_EMAIL'].iloc[i]])
+
+    for j in range(len(datalist)) :
+        treeview.insert('', 'end', values=datalist[j])
 
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
