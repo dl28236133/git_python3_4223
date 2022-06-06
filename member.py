@@ -4,6 +4,7 @@ import tkinter.ttk
 from tkinter.filedialog import *
 import math
 import pandas as pd
+import os
 
 
 # --회원시작
@@ -201,9 +202,11 @@ imagefilename = None
 def member_register():
     # 회원등록 - 파일찾기 버튼 클릭 시
     def image_btn():
-        imagename = askopenfilename(parent=memregiwindow, filetypes=(("png 파일", "*.png"), ("모든 파일", "*.*")))
+
+        imagename = askopenfilename(parent = memregiwindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
+        imagename_onlyfilename = 'image/' + os.path.basename(imagename)
         regiphotoinput.delete(0, 'end')
-        regiphotoinput.insert(0, imagename)
+        regiphotoinput.insert(0, imagename_onlyfilename)
 
     # 라디오버튼(성별) 커맨드 함수
     def genderM_set():
@@ -377,17 +380,20 @@ def member_search_fix():
 
         # 회원정보수정 - 회원검색 - 회원정보 - 이미지 변경 버튼 클릭
         def photo_fix_btn():
-            imagename = askopenfilename(parent=meminfowindow, filetypes=(("png 파일", "*.png"), ("모든 파일", "*.*")))
+
+            imagename = askopenfilename(parent = meminfowindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
             global imagefilename
-            imagefilename = imagename
-            try:
-                if math.isnan(imagefilename) == False:
+            try :
+                imagefilename = os.path.basename(imagename)
+                if math.isnan(imagefilename)==False :
                     meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                     infophotolabel.configure(image=meminfophoto)
                     infophotolabel.image = meminfophoto
 
-            except:
-                if imagefilename != '':
+            except :
+                imagefilename = 'image/' + os.path.basename(imagename)
+                if imagefilename!='' :
+
                     meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
                     infophotolabel.configure(image=meminfophoto)
                     infophotolabel.image = meminfophoto
