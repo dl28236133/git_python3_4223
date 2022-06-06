@@ -292,9 +292,11 @@ def member_register():
                                     "Member_EMAIL": regiemailinput.get(),
                                     "Member_IMAGE": regiphotoinput.get(),
                                     "Member_DEL_MEM": False}
-                        df_member = df_member.append(new_member,ignore_index=True)
-                        df_member = df_member.set_index(df_member['Member_TEL'])
-                        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+
+                        df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                        df_member_ori = df_member_ori.append(new_member,ignore_index=True)
+                        df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                        df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
                         messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
                         memregiwindow.destroy()
             
@@ -427,6 +429,7 @@ def member_search_fix():
 
             global imagefilename
             nonlocal df_member
+            nonlocal df_member_ori
 
             infoTELinput = infoTELinput1.get()+'-'+infoTELinput2.get()+'-'+infoTELinput3.get()
             num = True
@@ -475,13 +478,14 @@ def member_search_fix():
                                 num = False
 
                             if num == True :
-                                df_member["Member_NAME"].loc[Tel] = infonameinput.get()
-                                df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
-                                df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
-                                df_member["Member_GENDER"].loc[Tel] = gender.get()
-                                df_member["Member_IMAGE"].loc[Tel] = imagefilename
+                                df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                                df_member_ori["Member_NAME"].loc[Tel] = infonameinput.get()
+                                df_member_ori["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                                df_member_ori["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                                df_member_ori["Member_GENDER"].loc[Tel] = gender.get()
+                                df_member_ori["Member_IMAGE"].loc[Tel] = imagefilename
             
-                                df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                                df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                                 messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
                                 meminfowindow.destroy()
@@ -797,7 +801,7 @@ def member_search_del():
         else :
             df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
             telresultlist = list(df_search['Member_TEL'])
-
+            
        
         if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
             or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
@@ -833,16 +837,19 @@ def member_search_del():
         # 회원탈퇴 - 회원검색 - 회원정보 - 회원탈퇴 버튼 클릭
         def info_del_btn():
             nonlocal df_member
+            nonlocal df_member_ori
             df_rent = pd.read_csv("RENT.csv", encoding='UTF-8-sig')
 
             if Tel in list(df_rent['USER_PHONE']) :
                 messagebox.showinfo("회원탈퇴 실패", "대출중인 책이 있습니다. 반납처리 후 다시 시도해주세요.")
 
             else :
-                df_member["Member_DEL_MEM"].loc[Tel] = True
+                df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                df_member_ori["Member_DEL_MEM"].loc[Tel] = True
 
-                df_member = df_member.set_index(df_member['Member_TEL'])
-                df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                
+                df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                 messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
                 meminfowindow.destroy()
