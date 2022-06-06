@@ -4,6 +4,11 @@ import pandas as pd
 from functools import partial
 import tkinter.ttk
 import webbrowser
+import os
+import math
+from tkinter.filedialog import *
+import shutil
+from PIL import ImageTk,Image
 
 #--도서 시작
 
@@ -38,6 +43,14 @@ def fix2_btn():
 
 # 새 책 추가
 def Book_add():
+    def image_btn():
+        imagename = askopenfilename(parent=newWindow, initialdir="image",
+                                    filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
+        imagename_onlyfilename = 'image/' + os.path.basename(imagename)
+        shutil.copyfile(imagename, imagename_onlyfilename)
+        entry7.delete(0, 'end')
+        entry7.insert(0, imagename_onlyfilename)
+
 
     def add_book():
         # csv 불러오기
@@ -79,7 +92,7 @@ def Book_add():
     Label(newWindow, text='정보페이지 URL : ', bg='LightSkyBlue1').place(x=20, y=160)
     Label(newWindow, text='도서 사진 : ', bg='LightSkyBlue1').place(x=20, y=190)
     Label(newWindow, text='도서 설명 : ', bg='LightSkyBlue1').place(x=20, y=220)
-    Button(newWindow, text='찾기', command=find_book2, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
+    Button(newWindow, text='찾기', command=image_btn, width=8, height=1, bg='LightSkyBlue1').place(x=300, y=190)
     Button(newWindow, text='추가', command= add_book,
            width=8, height=1, bg='LightSkyBlue1').place(x=300, y=220)
 
@@ -158,6 +171,9 @@ def Book_search():
         B_ISBN = (treeview.set(setISBN, column='1'))
         B_ISBN = int(B_ISBN)
 
+        global imagefilename
+        imagefilename = df_book['BOOK_IMAGE'].loc[B_ISBN]
+
         bookfix = Tk()
         bookfix.title('도서 정보 관리')
         bookfix.geometry('500x400')
@@ -171,7 +187,14 @@ def Book_search():
         URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
-        PHOTO = Label(bookfix, width=20, height=12, relief='solid')
+
+        img = Image.open(df_book["BOOK_IMAGE"].loc[B_ISBN])
+        img = img.resize((140,200) , Image.ANTIALIAS )
+        print(df_book["BOOK_IMAGE"].loc[B_ISBN])
+        image = ImageTk.PhotoImage(img, master = bookfix)
+        PHOTO = Label(bookfix, image = image ,width = 140 )
+        PHOTO.pack()
+
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
         NAMEinput = Label(bookfix, text=df_book["BOOK_TITLE"].loc[B_ISBN], width=20, bg='white', anchor='w')
@@ -349,6 +372,9 @@ def bookfix_info():
 
         B_ISBN = (treeview.set(setISBN, column='1'))
         B_ISBN = int(B_ISBN)
+
+        global imagefilename
+        imagefilename = df_book['BOOK_IMAGE'].loc[B_ISBN]
 
         bookfix = Tk()
         bookfix.title('도서 정보 관리')
@@ -538,6 +564,9 @@ def bookdel_info():
 
         B_ISBN = (treeview.set(setISBN, column='1'))
         B_ISBN = int(B_ISBN)
+
+        global imagefilename
+        imagefilename = df_book['BOOK_IMAGE'].loc[B_ISBN]
 
         bookfix = Tk()
         bookfix.title('도서 정보 관리')
