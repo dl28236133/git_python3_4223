@@ -5,6 +5,10 @@ from tkinter.filedialog import *
 import math
 import pandas as pd
 import os
+import os.path
+import shutil
+from PIL import ImageTk,Image
+
 
 #--회원시작
 
@@ -26,21 +30,45 @@ def member_search():
         
         name = nameinput.get()
         tel = TELinput.get()
-        df_namelist = list(df_member['Member_NAME'])
-        df_tellist = list(df_member['Member_TEL'])
 
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+        namelist = list(df_member['Member_NAME'])
+        tellist = list(df_member['Member_TEL'])
+
+        if name == '' :
+            nameresultlist = []
+
+        else :
+            df_search = df_member[df_member['Member_NAME'].str.contains(name)]
+            nameresultlist = list(df_search['Member_NAME'])
+
+        if tel == '' :
+            telresultlist = []
+
+        else :
+            df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
+            telresultlist = []
+
+       #여기에 조건문 수정 필요
+        if True:
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
+                df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            elif name == '' :
+                df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
                 for i in range(len(df_search.index)) :
                     datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
                                 df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
+                df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
@@ -74,7 +102,9 @@ def member_search():
         #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try :
             if math.isnan(imagefilename)==False :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
@@ -82,7 +112,9 @@ def member_search():
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
         except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
@@ -177,6 +209,8 @@ def member_register():
         imagename = askopenfilename(parent = memregiwindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
         if imagename != '':
             imagename_onlyfilename = 'image/' + os.path.basename(imagename)
+            if imagename != imagename_onlyfilename :
+                shutil.copyfile(imagename, imagename_onlyfilename)
             regiphotoinput.configure(state='normal')
             regiphotoinput.delete(0, 'end')
             regiphotoinput.insert(0, imagename_onlyfilename)
@@ -324,21 +358,28 @@ def member_search_fix():
         
         name = nameinput.get()
         tel = TELinput.get()
-        df_namelist = list(df_member['Member_NAME'])
-        df_tellist = list(df_member['Member_TEL'])
 
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+        #여기에 조건문 수정 필요
+        if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
+                df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            elif name == '' :
+                df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
                 for i in range(len(df_search.index)) :
                     datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
                                 df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
+                df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
@@ -444,20 +485,26 @@ def member_search_fix():
 
             name = nameinput.get()
             tel = TELinput.get()
-            df_namelist = list(df_member['Member_NAME'])
-            df_tellist = list(df_member['Member_TEL'])
 
-            if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+            if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
                 datalist = []
                 if tel == '' :
-                    df_search = df_member.loc[df_member['Member_NAME']==name]
+                    df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
                     for i in range(len(df_search.index)) :
                         datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+                elif name == '' :
+                    df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
+                    for i in range(len(df_search.index)) :
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
                 else :
-                        datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                                     df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
+                    df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                    for i in range(len(df_search.index)) :
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
@@ -467,17 +514,23 @@ def member_search_fix():
             imagename = askopenfilename(parent = meminfowindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
             global imagefilename
             try :
-                imagefilename = os.path.basename(imagename) 
+                imagefilename = os.path.basename(imagename)
                 if math.isnan(imagefilename)==False :
-                    meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                    infophotolabel.configure(image=meminfophoto)
+                    img = Image.open(imagefilename)
+                    img = img.resize((150,200) , Image.ANTIALIAS)
+                    meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
+                    infophotolabel.configure(width=150, height=200, image=meminfophoto)
                     infophotolabel.image = meminfophoto
 
             except :
                 if imagefilename!='' :
                     imagefilename = 'image/' + os.path.basename(imagename)
-                    meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
-                    infophotolabel.configure(image=meminfophoto)
+                    if os.path.isfile(imagefilename) == False :
+                        shutil.copyfile(imagename, imagefilename)
+                    img = Image.open(imagefilename)
+                    img = img.resize((150,200) , Image.ANTIALIAS)
+                    meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
+                    infophotolabel.configure(width=150, height=200, image=meminfophoto)
                     infophotolabel.image = meminfophoto
                 
         
@@ -512,15 +565,19 @@ def member_search_fix():
         #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try :
             if math.isnan(imagefilename)==False :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
             else :
-                infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
+                infophotolabel = Label(meminfowindow, width=21, height=13, relief='solid')
 
         except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
@@ -579,7 +636,7 @@ def member_search_fix():
         # 닫기, 수정, 이미지 변경 버튼 위치 지정
         infoclosebutton.place(x=440, y=250)
         infofixbutton.place(x=390, y=250)
-        photofixbutton.place(x=55, y=220)
+        photofixbutton.place(x=60, y=230)
     # 회원정보수정-회원정보 끝
 
     # 회원정보 표(treeview) 회원 더블클릭시 이벤트
@@ -645,28 +702,33 @@ def member_search_del():
         
         name = nameinput.get()
         tel = TELinput.get()
-        df_namelist = list(df_member['Member_NAME'])
-        df_tellist = list(df_member['Member_TEL'])
 
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+        if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
-                df_search = df_member.loc[df_member['Member_NAME']==name]
+                df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            elif name == '' :
+                df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
                 for i in range(len(df_search.index)) :
                     datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
                                 df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             else :
-                datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                            df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
+                df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
 
         else :
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
-
 
     # 회원탈퇴 - 회원검색 - 회원정보(회원탈퇴 버튼 존재)
     def member_info_del():
@@ -696,20 +758,26 @@ def member_search_del():
 
             name = nameinput.get()
             tel = TELinput.get()
-            df_namelist = list(df_member['Member_NAME'])
-            df_tellist = list(df_member['Member_TEL'])
 
-            if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+            if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
                 datalist = []
                 if tel == '' :
-                    df_search = df_member.loc[df_member['Member_NAME']==name]
+                    df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
                     for i in range(len(df_search.index)) :
                         datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+                elif name == '' :
+                    df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
+                    for i in range(len(df_search.index)) :
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
                 else :
-                        datalist = [[df_member['Member_TEL'].loc[tel], df_member['Member_NAME'].loc[tel], df_member['Member_BIRTHDATE'].loc[tel],
-                                     df_member['Member_GENDER'].loc[tel], df_member['Member_EMAIL'].loc[tel]]]
+                    df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                    for i in range(len(df_search.index)) :
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
@@ -738,7 +806,9 @@ def member_search_del():
         #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try :
             if math.isnan(imagefilename)==False :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
@@ -746,7 +816,9 @@ def member_search_del():
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
         except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
@@ -842,27 +914,33 @@ def deleted_member_search():
         
         name = nameinput.get()
         tel = TELinput.get()
-        df_namelist = list(df_delmem['Member_NAME'])
-        df_tellist = list(df_delmem['Member_TEL'])
 
-        if (name in df_namelist and tel in df_tellist) or (name in df_namelist and tel=='') or (name=='' and tel in df_tellist) :
+        if True in list(df_delmem['Member_NAME'].str.contains(name)) or True in list(df_delmem['Member_TEL'].str.contains(tel)) :
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
             if tel == '' :
-                df_search = df_delmem.loc[df_delmem['Member_NAME']==name]
+                df_search = df_delmem.loc[df_delmem['Member_NAME'].str.contains(name)]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            elif name == '' :
+                df_search = df_delmem.loc[df_delmem['Member_TEL'].str.contains(tel)]
                 for i in range(len(df_search.index)) :
                     datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
                                 df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             else :
-                datalist = [[df_delmem['Member_TEL'].loc[tel], df_delmem['Member_NAME'].loc[tel], df_delmem['Member_BIRTHDATE'].loc[tel],
-                            df_delmem['Member_GENDER'].loc[tel], df_delmem['Member_EMAIL'].loc[tel]]]
+                df_search = df_delmem.loc[(df_delmem['Member_TEL'].str.contains(tel)) & (df_delmem['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)) :
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
+                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
         
             for j in range(len(datalist)) :
                 treeview.insert('', 'end', values=datalist[j])
 
         else :
-            messagebox.showinfo("오류", "존재하지 않는 회원이거나, 회원탈퇴 처리되지 않은 회원입니다.")
+            messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
 
     # 탈퇴회원검색 - 회원 선택 시 회원정보 창 출력
     def deleted_member_info():
@@ -871,7 +949,7 @@ def deleted_member_search():
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
 
-        global imagefilename
+        global imagefilenamememinfophot
         imagefilename = df_delmem['Member_IMAGE'].loc[Tel]
 
         # 탈퇴회원정보 창 생성
@@ -890,7 +968,9 @@ def deleted_member_search():
         #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
         try :
             if math.isnan(imagefilename)==False :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
@@ -898,7 +978,9 @@ def deleted_member_search():
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
         except :
-                meminfophoto = PhotoImage(file=imagefilename, master=meminfowindow)
+                img = Image.open(imagefilename)
+                img = img.resize((150,200) , Image.ANTIALIAS)
+                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
