@@ -141,8 +141,8 @@ def member_search():
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_dbclick)
 
-    treeview.column("#1", width=100, )
-    treeview.heading("1", text="전화번호")
+    treeview.column("#1", width=100, anchor="center" )
+    treeview.heading("1", text="전화번호", anchor="center")
 
     treeview.column("2", width=100, anchor="center")
     treeview.heading("2", text="이름", anchor="center")
@@ -194,28 +194,59 @@ def member_register():
         df_member = pd.read_csv('Member.csv', encoding='UTF-8-sig')
         df_member = df_member.set_index(df_member['Member_TEL'])
 
-        if regiTELinput.get() in list(df_member['Member_TEL']) :
+        regiTELinput = regiTELinput1.get()+'-'+regiTELinput2.get()+'-'+regiTELinput3.get()
+        num = True
+
+        try :
+            if regiTELinput1.get()[0] == '0' :
+                int(regiTELinput1.get()[1:])
+
+            else :
+                int(regiTELinput1.get())
+                
+            int(regiTELinput2.get())
+            int(regiTELinput3.get())
+            
+            if int(regiTELinput1.get()) < 0 or int(regiTELinput2.get()) < 0 or int(regiTELinput3.get()) < 0 :
+                messagebox.showinfo("회원등록실패", "올바른 전화번호 값을 입력하세요.")
+                num = False
+
+        except :
+            if regiTELinput1.get()=='' and regiTELinput2.get()=='' and regiTELinput3.get()=='' :
+                messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
+
+            else :
+                messagebox.showinfo("회원등록실패", "올바른 전화번호 값을 입력하세요.")
+
+            num = False
+
+        if regiTELinput in list(df_member['Member_TEL']) :
             messagebox.showinfo("회원등록실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
 
-        elif reginameinput.get()=='' or regiTELinput.get()=='' or regidateinput.get()=='' or regiemailinput.get()=='' :
-            messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
+        elif reginameinput.get()=='' or regidateinput.get()=='' or regiemailinput.get()=='' :
+            if regiTELinput1.get()=='' or regiTELinput2.get()=='' or regiTELinput3.get()=='' :
+                num = False
+
+            else :
+                messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
 
         else:
             try :
-                int(regidateinput.get())
-                new_member = {"Member_TEL": regiTELinput.get(),
-                              "Member_NAME": reginameinput.get(),
-                              "Member_BIRTHDATE": regidateinput.get(),
-                              "Member_GENDER": gender.get(),
-                              "Member_EMAIL": regiemailinput.get(),
-                              "Member_IMAGE": regiphotoinput.get(),
-                              "Member_DEL_MEM": False}
-                df_member = df_member.append(new_member,ignore_index=True)
-                df_member = df_member.set_index(df_member['Member_TEL'])
-                df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
-                messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
-                memregiwindow.destroy()
-
+                if num == True :
+                    int(regidateinput.get())
+                    new_member = {"Member_TEL": regiTELinput,
+                                  "Member_NAME": reginameinput.get(),
+                                  "Member_BIRTHDATE": regidateinput.get(),
+                                  "Member_GENDER": gender.get(),
+                                  "Member_EMAIL": regiemailinput.get(),
+                                  "Member_IMAGE": regiphotoinput.get(),
+                                  "Member_DEL_MEM": False}
+                    df_member = df_member.append(new_member,ignore_index=True)
+                    df_member = df_member.set_index(df_member['Member_TEL'])
+                    df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                    messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
+                    memregiwindow.destroy()
+            
             except :
                 messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
 
@@ -246,7 +277,9 @@ def member_register():
     regigenderinput2 = Radiobutton(memregiwindow, text='여', bg='white', variable=gender, value="여", command=genderW_set)
 
     # 회원정보 입력받을 엔트리
-    regiTELinput = Entry(memregiwindow, width=25)
+    regiTELinput1 = Entry(memregiwindow, width=5)
+    regiTELinput2 = Entry(memregiwindow, width=5)
+    regiTELinput3 = Entry(memregiwindow, width=5)
     regiemailinput = Entry(memregiwindow, width=25)
     regiphotoinput = Entry(memregiwindow, width=25, state='readonly')
 
@@ -268,7 +301,9 @@ def member_register():
     regidateinput.place(x=120, y=60)
     regigenderinput1.place(x=120, y=100)
     regigenderinput2.place(x=160, y=100)
-    regiTELinput.place(x=120, y=140)
+    regiTELinput1.place(x=120, y=140)
+    regiTELinput2.place(x=170, y=140)
+    regiTELinput3.place(x=220, y=140)
     regiemailinput.place(x=120, y=180)
     regiphotoinput.place(x=120, y=220)
 
@@ -320,48 +355,85 @@ def member_search_fix():
             global imagefilename
             nonlocal df_member
 
-            if infoTELinput.get() == df_member['Member_TEL'].loc[Tel] :
-                try :
-                    int(infodateinput.get())
-                    df_member["Member_TEL"].loc[Tel] = infoTELinput.get()
-                    df_member["Member_NAME"].loc[Tel] = infonameinput.get()
-                    df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
-                    df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
-                    df_member["Member_GENDER"].loc[Tel] = gender.get()
-                    df_member["Member_IMAGE"].loc[Tel] = imagefilename
+            infoTELinput = infoTELinput1.get()+'-'+infoTELinput2.get()+'-'+infoTELinput3.get()
+            num = True
 
-                    df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+            try :
+                if infoTELinput1.get()[0] == '0' :
+                    int(infoTELinput1.get()[1:])
 
-                    messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
-                    meminfowindow.destroy()
+                else :
+                    int(infoTELinput1.get())
                 
+                int(infoTELinput2.get())
+                int(infoTELinput3.get())
+            
+                if int(infoTELinput1.get()) < 0 or int(infoTELinput2.get()) < 0 or int(infoTELinput3.get()) < 0 :
+                    messagebox.showinfo("회원정보 수정 실패", "올바른 전화번호 값을 입력하세요.")
+                    num = False
+
+            except :
+                if infoTELinput1.get()=='' and infoTELinput2.get()=='' and infoTELinput3.get()=='' :
+                    messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
+
+                else :
+                    messagebox.showinfo("회원정보 수정 실패", "올바른 전화번호 값을 입력하세요.")
+
+                num = False
+
+            if infoTELinput == df_member['Member_TEL'].loc[Tel] :
+                if infonameinput.get()=='' or infodateinput.get()=='' or infoemailinput.get()=='' :
+                    if infoTELinput1.get()=='' or infoTELinput2.get()=='' or infoTELinput3.get()=='' :
+                        num = False
+
+                    else :
+                        messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
+                    
+                try :
+                    if num == True :
+                        int(infodateinput.get())
+                        df_member["Member_NAME"].loc[Tel] = infonameinput.get()
+                        df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                        df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                        df_member["Member_GENDER"].loc[Tel] = gender.get()
+                        df_member["Member_IMAGE"].loc[Tel] = imagefilename
+            
+                        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+
+                        messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
+                        meminfowindow.destroy()
+            
                 except :
-                    messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
+                    messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
+     
+            elif infoTELinput in list(df_member['Member_TEL']) :
+                messagebox.showinfo("회원정보 수정 실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
 
-            elif infoTELinput.get() in list(df_member['Member_TEL']) :
-                messagebox.showinfo("회원정보수정 실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
+            elif infonameinput.get()=='' or infodateinput.get()=='' or infoemailinput.get()=='' :
+                if infoTELinput1.get()=='' or infoTELinput2.get()=='' or infoTELinput3.get()=='' :
+                    num = False
 
-            elif infonameinput.get()=='' or infoTELinput.get()=='' or infodateinput.get()=='' or infoemailinput.get()=='' :
-                messagebox.showinfo("회원정보수정 실패", "입력되지 않은 회원정보가 있습니다.")
+                else :
+                    messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
 
             else:
                 try :
-                    int(infodateinput.get())
-                    df_member["Member_TEL"].loc[Tel] = infoTELinput.get()
-                    df_member["Member_NAME"].loc[Tel] = infonameinput.get()
-                    df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
-                    df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
-                    df_member["Member_GENDER"].loc[Tel] = gender.get()
-                    df_member["Member_IMAGE"].loc[Tel] = imagefilename
+                    if num == True :
+                        int(infodateinput.get())
+                        df_member["Member_TEL"].loc[Tel] = infoTELinput
+                        df_member["Member_NAME"].loc[Tel] = infonameinput.get()
+                        df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
+                        df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
+                        df_member["Member_GENDER"].loc[Tel] = gender.get()
+                        df_member["Member_IMAGE"].loc[Tel] = imagefilename
+            
+                        df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
-                    df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
-
-                    messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
-                    meminfowindow.destroy()
-                
+                        messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
+                        meminfowindow.destroy()
+            
                 except :
-                    messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
-
+                    messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
 
             for row in treeview.get_children() :
                 treeview.delete(row)
@@ -470,8 +542,14 @@ def member_search_fix():
             infogenderinput2.select()
 
         # 회원정보를 입력받을 엔트리
-        infoTELinput = Entry(meminfowindow, width=25)
-        infoTELinput.insert(0, df_member['Member_TEL'].loc[Tel])
+        infoTELinput1 = Entry(meminfowindow, width=5)
+        infoTELinput2 = Entry(meminfowindow, width=5)
+        infoTELinput3 = Entry(meminfowindow, width=5)
+        infoTEL = df_member['Member_TEL'].loc[Tel]
+        infoTELsplit = infoTEL.split('-')
+        infoTELinput1.insert(0, infoTELsplit[0])
+        infoTELinput2.insert(0, infoTELsplit[1])
+        infoTELinput3.insert(0, infoTELsplit[2])
         infoemailinput = Entry(meminfowindow, width=25)
         infoemailinput.insert(0, df_member['Member_EMAIL'].loc[Tel])
 
@@ -493,7 +571,9 @@ def member_search_fix():
         infodateinput.place(x=290, y=60)
         infogenderinput1.place(x=290, y=100)
         infogenderinput2.place(x=330, y=100)
-        infoTELinput.place(x=290, y=140)
+        infoTELinput1.place(x=290, y=140)
+        infoTELinput2.place(x=340, y=140)
+        infoTELinput3.place(x=390, y=140)
         infoemailinput.place(x=290, y=180)
 
         # 닫기, 수정, 이미지 변경 버튼 위치 지정
@@ -528,8 +608,8 @@ def member_search_fix():
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_fix_dbclick)
 
-    treeview.column("#1", width=100, )
-    treeview.heading("1", text="전화번호")
+    treeview.column("#1", width=100, anchor="center" )
+    treeview.heading("1", text="전화번호", anchor="center")
 
     treeview.column("2", width=100, anchor="center")
     treeview.heading("2", text="이름", anchor="center")
@@ -594,13 +674,18 @@ def member_search_del():
         # 회원탈퇴 - 회원검색 - 회원정보 - 회원탈퇴 버튼 클릭
         def info_del_btn():
             nonlocal df_member
+            df_rent = pd.read_csv("RENT.csv", encoding='UTF-8-sig')
 
-            df_member["Member_DEL_MEM"].loc[Tel] = True
+            if Tel in list(df_rent['USER_PHONE']) :
+                messagebox.showinfo("회원탈퇴 실패", "대출중인 책이 있습니다. 반납처리 후 다시 시도해주세요.")
 
-            df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+            else :
+                df_member["Member_DEL_MEM"].loc[Tel] = True
 
-            messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
-            meminfowindow.destroy()
+                df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+
+                messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
+                meminfowindow.destroy()
 
             for row in treeview.get_children() :
                 treeview.delete(row)
@@ -720,8 +805,8 @@ def member_search_del():
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_del_dbclick)
 
-    treeview.column("#1", width=100, )
-    treeview.heading("1", text="전화번호")
+    treeview.column("#1", width=100, anchor="center")
+    treeview.heading("1", text="전화번호", anchor="center")
 
     treeview.column("2", width=100, anchor="center")
     treeview.heading("2", text="이름", anchor="center")
@@ -875,8 +960,8 @@ def deleted_member_search():
     treeview.pack()
     treeview.bind('<Double-Button-1>', deleted_member_info_dbclick)
 
-    treeview.column("#1", width=100, )
-    treeview.heading("1", text="전화번호")
+    treeview.column("#1", width=100, anchor="center")
+    treeview.heading("1", text="전화번호", anchor="center")
 
     treeview.column("2", width=100, anchor="center")
     treeview.heading("2", text="이름", anchor="center")
