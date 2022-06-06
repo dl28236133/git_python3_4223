@@ -143,20 +143,28 @@ def Book_search():
         BookName = InputBookName.get()
         AuthorName = InputAuthor.get()
 
-        Namelist = list(df_book['BOOK_TITLE'])
-        Autlist = list(df_book['BOOK_AUTHOR'])
-        """
-        if BookName != '':
-            BookName = [ i for i in Namelist if BookName in i]
-        if AuthorName != '':
-            AuthorName = [s for s in Autlist if AuthorName in s]
-        """
+        NameValues = df_book[df_book["BOOK_TITLE"].str.contains(BookName)]
+        AuthorValues = df_book[df_book["BOOK_AUTHOR"].str.contains(AuthorName)]
+        print(AuthorValues)
+        print(NameValues)
+        datalist = []
 
-        if (BookName in Namelist or AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
+        for i in range(len(NameValues.index)):
+            datalist.append([NameValues['BOOK_ISBN'].iloc[i], NameValues['BOOK_TITLE'].iloc[i],
+                                     NameValues['BOOK_AUTHOR'].iloc[i],
+                                     NameValues['BOOK_PUB'].iloc[i], NameValues['BOOK_PRICE'].iloc[i],
+                                     NameValues['BOOK_RENT'].iloc[i]])
+        for j in range(len(datalist)):
+            treeview.insert('', 'end', text=i, values=datalist[j])
+
+        """
+        if (BookName in Namelist and AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
                 BookName == '' and AuthorName in Autlist):
+
             datalist = []
             if AuthorName == '':
-                df_search = df_book.loc[df_book['BOOK_TITLE'] == BookName]
+                df_search = df_book.loc[df_book['BOOK_TITLE'].str.contains(BookName)]
+                print(df_search)
                 for i in range(len(df_search.index)):
                     datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
                                      df_search['BOOK_AUTHOR'].iloc[i],
@@ -172,10 +180,11 @@ def Book_search():
                                      df_search['BOOK_LINK'].iloc[i]])
             treeview.place(x=25, y=100)
             for j in range(len(datalist)):
-                treeview.insert('', 'end', text = i , values=datalist[j])
+                treeview.insert('', 'end', text=i, values=datalist[j])
 
         else:
             messagebox.showinfo("오류", "잘못된 책이름 또는 저자명입니다.")
+        """
         treeview.bind('<Double-Button-1>', bookfix_info_dbclick)
 
 
@@ -592,15 +601,20 @@ def bookdel_info():
     def bookfix_info_dbclick2(event):
         def bookdel():
             del_index = df_book[df_book['BOOK_ISBN'] == B_ISBN].index
-            df_book.drop(del_index, inplace=True)
 
-            df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+            df_rent = pd.read_csv("RENT.csv", encoding='UTF-8-sig')
+            IsbnList = list(df_rent['BOOK_ISBN'])
 
+            if (del_index in IsbnList ):
+                messagebox.showinfo("삭제실패", "도서가 대여중입니다.")
+            else:
+                df_book.drop(del_index, inplace=True)
+                df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
 
-            messagebox.showinfo("삭제", "삭제되었습니다.")
+                messagebox.showinfo("삭제", "삭제되었습니다.")
+
             bookfix.destroy()
             searchBook.destroy()
-
 
         setISBN = treeview.focus()
 
@@ -620,7 +634,7 @@ def bookdel_info():
         AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
         PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
-        URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='관련 링크 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         try:
@@ -639,7 +653,7 @@ def bookdel_info():
         AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w',fg ='Blue')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
         B_RENTinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
