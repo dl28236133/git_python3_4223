@@ -1,6 +1,6 @@
 ﻿BOOK_ISBN,BOOK_TITLE,BOOK_AUTHOR,BOOK_PUB,BOOK_PRICE,BOOK_LINK,BOOK_IMAGE,BOOK_EX,BOOK_RENT
 99988877766,C언어스케치,저자누구,어디지,20000,http:xxxx,,x,True
-12345678,실험1,실험1저자,실험1출판사,1000,http,,x,False
-11111111,실험2,실험2,실험2,10000,http:,image/5.png,x,False
+2222222222,aaaaa,실험1저자,실험1출판사,1000,http,NaN,x,False
+3333333333,실험2,실험2,실험2,10000,http:,image/5.png,x,False
 8512798561,실험3,실험3,실험3,1,http,image/1.jpg,x,False
 752478621,이미지,이미지,이미지,100,httP://naver.com,image/2.jpg,x,False

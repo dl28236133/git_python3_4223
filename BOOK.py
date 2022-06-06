@@ -22,39 +22,23 @@ def book_csv():
                      'BOOK_IMAGE', 'BOOK_EX' , 'BOOK_RENT'])
         df_book.to_csv('Book.csv', index=False, encoding='UTF-8-sig')
 
-# 버튼 눌렀을 때 나오는 메세지 박스 코드
-
-
-def find_book():
-    messagebox.showinfo("중복", "검색합니다.")
-
-def find_book2():
-    messagebox.showinfo("이미지", "찾기")
-
-
-def photo_fix_btn():
-    messagebox.showinfo("이미지변경", "파일 탐색기 실행")
-
-def fix_btn():
-    messagebox.showinfo("수정", "수정완료")
-
-def fix2_btn():
-    messagebox.showinfo("삭제", "삭제완료")
 global check
 # 새 책 추가
 def Book_add():
     def find_book():
         df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
         df_book = df_book.set_index(df_book['BOOK_ISBN'])
-
-        check_ISBN = int(entry1.get())
-        IsbnList = list(df_book['BOOK_ISBN'])
-        if (check_ISBN in IsbnList):
-            messagebox.showinfo("중복", "이미 등록된 도서입니다.")
+        check_ISBN = (entry1.get())
+        if( check_ISBN.isdigit()):
+            check_ISBN = int(entry1.get())
+            IsbnList = list(df_book['BOOK_ISBN'])
+            if (check_ISBN in IsbnList):
+                messagebox.showinfo("중복", "이미 등록된 도서입니다.")
+            else:
+                messagebox.showinfo("등록가능", "등록이 가능한 도서입니다.")
+                button1.config(state="normal")
         else:
-            messagebox.showinfo("등록가능", "등록이 가능한 도서입니다.")
-            button1.config(state ="normal")
-
+            messagebox.showinfo("에러",'ISBN은 정수만 입력이 가능합니다.')
 
     def image_btn():
         imagename = askopenfilename(parent=newWindow, initialdir="image",
@@ -66,28 +50,56 @@ def Book_add():
 
 
     def add_book():
-        # csv 불러오기
-        messagebox.showinfo("도서 추가", "추가")
 
-        new_book = { 'BOOK_ISBN' : entry1.get(),
-                     'BOOK_TITLE' : entry2.get(),
-                     'BOOK_AUTHOR' : entry3.get(),
-                     'BOOK_PUB' : entry4.get(),
-                     'BOOK_PRICE' : entry5.get(),
-                     'BOOK_LINK' : entry6.get(),
-                     "BOOK_IMAGE" : entry7.get(),
-                     "BOOK_EX" : entry8.get(),
-                     "BOOK_RENT" : False
-        }
-        df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
-        df_book = df_book.set_index(df_book['BOOK_ISBN'])
+        #미등록시 예외
+        try:
+            if entry2.get() == "":
+                messagebox.showinfo('등록실패', '도서명이 입력되지 않았습니다.')
+            elif entry3.get() == "":
+                messagebox.showinfo('등록실패', '저자가 입력되지 않았습니다.')
+            elif entry4.get() == "":
+                messagebox.showinfo('등록실패', '출판사가 입력되지 않았습니다.')
+            elif entry5.get() == "":
+                messagebox.showinfo('등록실패', '가격이 입력되지 않았습니다.')
+            elif entry6.get() == "":
+                messagebox.showinfo('등록실패', '관련 링크가 입력되지 않았습니다.')
+            elif entry8.get() == "":
+                messagebox.showinfo('등록실패', '도서설명이 입력되지 않았습니다.')
+            else:
+                raise
+        except:
+            #자료형 예외
+            try:
+                if (entry2.get()).isdigit():
+                    messagebox.showinfo('등록실패', '도서명은 문자만 가능합니다.')
+                elif (entry3.get()).isdigit():
+                    messagebox.showinfo('등록실패', '저자명은 문자만 가능합니다.')
+                elif (entry4.get()).isdigit():
+                    messagebox.showinfo('등록실패', '출판사명은 문자만 가능합니다.')
+                elif (entry5.get()).isdigit() == False:
+                    messagebox.showinfo('등록실패', '가격은 숫자만 가능합니다.')
+                else:
+                    raise
+            except:
+                new_book = {'BOOK_ISBN': entry1.get(),
+                            'BOOK_TITLE': entry2.get(),
+                            'BOOK_AUTHOR': entry3.get(),
+                            'BOOK_PUB': entry4.get(),
+                            'BOOK_PRICE': entry5.get(),
+                            'BOOK_LINK': entry6.get(),
+                            "BOOK_IMAGE": entry7.get(),
+                            "BOOK_EX": entry8.get(),
+                            "BOOK_RENT": False
+                            }
+                df_book = pd.read_csv("Book.csv", encoding='UTF-8-sig')
+                df_book = df_book.set_index(df_book['BOOK_ISBN'])
 
-        df_book = df_book.append(new_book, ignore_index=True)
-        df_book = df_book.set_index(df_book['BOOK_ISBN'])
+                df_book = df_book.append(new_book, ignore_index=True)
+                df_book = df_book.set_index(df_book['BOOK_ISBN'])
 
-        df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+                df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+                messagebox.showinfo('등록성공' , '도서 등록이 완료되었습니다.')
 
-        newWindow.destroy()
 
     newWindow = Tk()
     newWindow.title('새 도서 추가')
@@ -118,6 +130,7 @@ def Book_add():
     entry5 = Entry(newWindow, width=30)
     entry6 = Entry(newWindow, width=25)
     entry7 = Entry(newWindow, width=25)
+    entry7.config(state = "disabled")
     entry8 = Entry(newWindow, width=25)
 
     entry1.place(x=65, y=10)
@@ -386,22 +399,69 @@ def bookfix_info():
             PHOTOinput.insert(0, imagename_onlyfilename)
 
         #수정 부분
+        #check_ISBN = (entry1.get())
+        #if( check_ISBN.isdigit()):
+        #    check_ISBN = int(entry1.get())
+        #    IsbnList = list(df_book['BOOK_ISBN'])
+        #    if (check_ISBN in IsbnList):
+        #        messagebox.showinfo("중복", "이미 등록된 도서입니다.")
         def clickFix():
+            try:
+                check_ISBN = (ISBNinput.get())
+                if( check_ISBN.isdigit()):
+                    check_ISBN = int(ISBNinput.get())
+                    IsbnList = list(df_book['BOOK_ISBN'])
 
-            df_book["BOOK_ISBN"].loc[B_ISBN] = ISBNinput.get()
-            df_book["BOOK_TITLE"].loc[B_ISBN] = NAMEinput.get()
-            df_book["BOOK_AUTHOR"].loc[B_ISBN] = AUTHORinput.get()
-            df_book["BOOK_PUB"].loc[B_ISBN] = PUBinput.get()
-            df_book["BOOK_PRICE"].loc[B_ISBN] = PRICEinput.get()
-            df_book["BOOK_LINK"].loc[B_ISBN] = URLinput.get()
-            df_book["BOOK_EX"].loc[B_ISBN] = EXinput.get()
-            df_book["BOOK_IMAGE"].loc[B_ISBN] = PHOTOinput.get()
+                    if (check_ISBN in IsbnList):
+                        messagebox.showinfo("중복", "이미 등록된 ISBN입니다.")
+                    else:
+                        raise
+                else:
+                    messagebox.showinfo("에러", 'ISBN은 정수만 입력이 가능합니다.')
+            except:
+                try:
+                    if NAMEinput.get() == "":
+                        messagebox.showinfo('수정실패', '도서명이 입력되지 않았습니다.')
+                    elif AUTHORinput.get() == "":
+                        messagebox.showinfo('수정실패', '저자가 입력되지 않았습니다.')
+                    elif PUBinput.get() == "":
+                        messagebox.showinfo('수정실패', '출판사가 입력되지 않았습니다.')
+                    elif PRICEinput.get() == "":
+                        messagebox.showinfo('수정실패', '가격이 입력되지 않았습니다.')
+                    elif URLinput.get() == "":
+                        messagebox.showinfo('수정실패', '관련 링크가 입력되지 않았습니다.')
+                    elif EXinput.get() == "":
+                        messagebox.showinfo('수정실패', '도서설명이 입력되지 않았습니다.')
+                    else:
+                        raise
+                except:
 
-            df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+                    try:
+                        if (NAMEinput.get()).isdigit():
+                            messagebox.showinfo('수정실패', '도서명은 문자만 가능합니다.')
+                        elif (AUTHORinput.get()).isdigit():
+                            messagebox.showinfo('수정실패', '저자명은 문자만 가능합니다.')
+                        elif (PUBinput.get()).수정실패():
+                            messagebox.showinfo('수정실패', '출판사명은 문자만 가능합니다.')
+                        elif (PRICEinput.get()).isdigit() == False:
+                            messagebox.showinfo('수정실패', '가격은 숫자만 가능합니다.')
+                        else:
+                            raise
+                    except:
+                        df_book["BOOK_ISBN"].loc[B_ISBN] = ISBNinput.get()
+                        df_book["BOOK_TITLE"].loc[B_ISBN] = NAMEinput.get()
+                        df_book["BOOK_AUTHOR"].loc[B_ISBN] = AUTHORinput.get()
+                        df_book["BOOK_PUB"].loc[B_ISBN] = PUBinput.get()
+                        df_book["BOOK_PRICE"].loc[B_ISBN] = PRICEinput.get()
+                        df_book["BOOK_LINK"].loc[B_ISBN] = URLinput.get()
+                        df_book["BOOK_EX"].loc[B_ISBN] = EXinput.get()
+                        df_book["BOOK_IMAGE"].loc[B_ISBN] = PHOTOinput.get()
 
-            messagebox.showinfo("수정","수정되었습니다.")
-            bookfix.destroy()
-            searchBook.destroy()
+                        df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
+
+                        messagebox.showinfo("수정", "수정되었습니다.")
+                        bookfix.destroy()
+                        searchBook.destroy()
 
         setISBN = treeview.focus()
 
@@ -424,6 +484,8 @@ def bookfix_info():
         URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
         B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
+
+
 
         try:
             if (df_book["BOOK_IMAGE"].loc[B_ISBN] != ""):
@@ -452,6 +514,7 @@ def bookfix_info():
         EXinput.insert(0, df_book["BOOK_EX"].loc[B_ISBN])
         B_RENTinput = Entry(bookfix)
         B_RENTinput.insert(0, df_book["BOOK_RENT"].loc[B_ISBN])
+        B_RENTinput.config(state= 'disabled')
         PHOTOinput = Entry(bookfix)
         PHOTOinput.insert(0 , df_book["BOOK_IMAGE"].loc[B_ISBN])
 

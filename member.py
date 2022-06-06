@@ -275,7 +275,7 @@ def member_register():
                 num = False
 
             else :
-                messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
+                messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")#
 
         else:
             try :
