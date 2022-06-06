@@ -442,6 +442,8 @@ def bookfix_info():
                         messagebox.showinfo("중복", "이미 등록된 ISBN입니다.")
                     else:
                         raise
+                elif check_ISBN == "":
+                    messagebox.showinfo("에러", 'ISBN이 입력되지 않았습니다.')
                 else:
                     messagebox.showinfo("에러", 'ISBN은 정수만 입력이 가능합니다.')
             except:
@@ -467,7 +469,7 @@ def bookfix_info():
                             messagebox.showinfo('수정실패', '도서명은 문자만 가능합니다.')
                         elif (AUTHORinput.get()).isdigit():
                             messagebox.showinfo('수정실패', '저자명은 문자만 가능합니다.')
-                        elif (PUBinput.get()).수정실패():
+                        elif (PUBinput.get()).isdigit():
                             messagebox.showinfo('수정실패', '출판사명은 문자만 가능합니다.')
                         elif (PRICEinput.get()).isdigit() == False:
                             messagebox.showinfo('수정실패', '가격은 숫자만 가능합니다.')
