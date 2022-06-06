@@ -117,11 +117,15 @@ def Book_search():
 
         Namelist = list(df_book['BOOK_TITLE'])
         Autlist = list(df_book['BOOK_AUTHOR'])
+        """
+        if BookName != '':
+            BookName = [ i for i in Namelist if BookName in i]
+        if AuthorName != '':
+            AuthorName = [s for s in Autlist if AuthorName in s]
+        """
 
-
-        if (BookName in Namelist and AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
+        if (BookName in Namelist or AuthorName in Autlist) or (BookName in Namelist and AuthorName == '') or (
                 BookName == '' and AuthorName in Autlist):
-
             datalist = []
             if AuthorName == '':
                 df_search = df_book.loc[df_book['BOOK_TITLE'] == BookName]
@@ -164,8 +168,9 @@ def Book_search():
         AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
         PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
-        URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
+        B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         PHOTO = Label(bookfix, width=20, height=12, relief='solid')
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
@@ -173,8 +178,9 @@ def Book_search():
         AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        B_RENTinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -185,7 +191,7 @@ def Book_search():
         URL.place(x=200, y=220)
         EX.place(x=200, y=260)
         PHOTO.place(x=20, y=20)
-
+        B_RENT.place(x=200, y=300)
 
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
@@ -195,6 +201,7 @@ def Book_search():
         PRICEinput.place(x=290, y=180)
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
+        B_RENTinput.place(x=290, y=300)
 
         #url 하이퍼링크
         def callback(url):
@@ -257,14 +264,14 @@ def Book_search():
     treeview.heading("5", text="가격", anchor="center")
 
     treeview.column("#6", width=150, anchor="center")
-    treeview.heading("6", text="URL", anchor="center")
+    treeview.heading("6", text="대여여부", anchor="center")
 
     # 표에 삽입될 데이터
     treelist = []
     for i in range(len(df_book)):
         treelist.append( (df_book["BOOK_ISBN"].iloc[i], df_book["BOOK_TITLE"].iloc[i],
                           df_book["BOOK_AUTHOR"].iloc[i], df_book["BOOK_PUB"].iloc[i],
-                          df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_LINK"].iloc[i], ) )
+                          df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_RENT"].iloc[i], ) )
 
 
     # 표에 데이터 삽입
@@ -355,6 +362,7 @@ def bookfix_info():
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
         URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
+        B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         PHOTO = Label(bookfix, width=20, height=12, relief='solid')
 
         ISBNinput = Entry(bookfix)
@@ -371,6 +379,8 @@ def bookfix_info():
         URLinput.insert(0, df_book["BOOK_LINK"].loc[B_ISBN])
         EXinput = Entry(bookfix)
         EXinput.insert(0, df_book["BOOK_EX"].loc[B_ISBN])
+        B_RENTinput = Entry(bookfix)
+        B_RENTinput.insert(0, df_book["BOOK_RENT"].loc[B_ISBN])
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -381,6 +391,7 @@ def bookfix_info():
         URL.place(x=200, y=220)
         EX.place(x=200, y=260)
         PHOTO.place(x=20, y=20)
+        B_RENT.place(x=200, y=300)
 
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
@@ -390,7 +401,7 @@ def bookfix_info():
         PRICEinput.place(x=290, y=180)
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
-
+        B_RENTinput.place(x=290, y=300)
 
 
         fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
@@ -400,6 +411,7 @@ def bookfix_info():
         fixphotob.place(x=55, y=220)
         fixbutton.place(x=200, y=350)
         Backb.place(x=260, y=350)
+
     searchBook = Tk()
     searchBook.geometry("850x400")
     searchBook.title("도서 검색")
@@ -430,7 +442,7 @@ def bookfix_info():
     treeview.pack()
 
     # 각 컬럼 설정. 컬럼 이름, 컬럼 넓이, 정렬 등
-    treeview.column("#0", width=8)
+    treeview.column("#0", width=80)
     treeview.heading("#0", text="index")
 
     treeview.column("#1", width=100, anchor="center")
@@ -449,14 +461,14 @@ def bookfix_info():
     treeview.heading("5", text="가격", anchor="center")
 
     treeview.column("#6", width=150, anchor="center")
-    treeview.heading("6", text="URL", anchor="center")
+    treeview.heading("6", text="대여 여부", anchor="center")
 
     # 표에 삽입될 데이터
     treelist = []
     for i in range(len(df_book)):
         treelist.append((df_book["BOOK_ISBN"].iloc[i], df_book["BOOK_TITLE"].iloc[i],
                          df_book["BOOK_AUTHOR"].iloc[i], df_book["BOOK_PUB"].iloc[i],
-                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_LINK"].iloc[i],))
+                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_RENT"].iloc[i],))
 
     # 표에 데이터 삽입
     for i in range(len(treelist)):
@@ -513,8 +525,6 @@ def bookdel_info():
         def bookdel():
             del_index = df_book[df_book['BOOK_ISBN'] == B_ISBN].index
             df_book.drop(del_index, inplace=True)
-            print(del_index)
-            print(df_book)
 
             df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
 
@@ -539,8 +549,9 @@ def bookdel_info():
         AUTHOR = Label(bookfix, text='저자 : ', bg='LightSkyBlue1')
         PUB = Label(bookfix, text='출판사 : ', bg='LightSkyBlue1')
         PRICE = Label(bookfix, text='가격 : ', bg='LightSkyBlue1')
-        URL = Label(bookfix, text='정보 URL : ', bg='LightSkyBlue1')
+        URL = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         EX = Label(bookfix, text='도서 설명 : ', bg='LightSkyBlue1')
+        B_RENT = Label(bookfix, text='대여 여부 : ', bg='LightSkyBlue1')
         PHOTO = Label(bookfix, width=20, height=12, relief='solid')
 
         ISBNinput = Label(bookfix, text=df_book["BOOK_ISBN"].loc[B_ISBN], width=20, bg='white', anchor='w')
@@ -548,8 +559,9 @@ def bookdel_info():
         AUTHORinput = Label(bookfix, text=df_book["BOOK_AUTHOR"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PUBinput = Label(bookfix, text=df_book["BOOK_PUB"].loc[B_ISBN], width=20, bg='white', anchor='w')
         PRICEinput = Label(bookfix, text=df_book["BOOK_PRICE"].loc[B_ISBN], width=20, bg='white', anchor='w')
-        URLinput = Label(bookfix, text=df_book["BOOK_LINK"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        URLinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
         EXinput = Label(bookfix, text=df_book["BOOK_EX"].loc[B_ISBN], width=20, bg='white', anchor='w')
+        B_RENTinput = Label(bookfix, text=df_book["BOOK_RENT"].loc[B_ISBN], width=20, bg='white', anchor='w')
 
         # 레이블 위젯 위치 설정
         ISBN.place(x=200, y=20)
@@ -560,6 +572,7 @@ def bookdel_info():
         URL.place(x=200, y=220)
         EX.place(x=200, y=260)
         PHOTO.place(x=20, y=20)
+        B_RENT.place(x=200, y = 300)
 
         # 레이블 위젯 위치 설정
         ISBNinput.place(x=290, y=20)
@@ -569,8 +582,7 @@ def bookdel_info():
         PRICEinput.place(x=290, y=180)
         URLinput.place(x=290, y=220)
         EXinput.place(x=290, y=260)
-
-
+        B_RENTinput.place(x=290, y=300)
 
         fixphotob = Button(bookfix, text='이미지 변경', command=photo_fix_btn)
         Backf = Button(bookfix, text='삭제', command=bookdel)
@@ -631,14 +643,14 @@ def bookdel_info():
     treeview.heading("5", text="가격", anchor="center")
 
     treeview.column("#6", width=150, anchor="center")
-    treeview.heading("6", text="URL", anchor="center")
+    treeview.heading("6", text="대여 여부", anchor="center")
 
     # 표에 삽입될 데이터
     treelist = []
     for i in range(len(df_book)):
         treelist.append((df_book["BOOK_ISBN"].iloc[i], df_book["BOOK_TITLE"].iloc[i],
                          df_book["BOOK_AUTHOR"].iloc[i], df_book["BOOK_PUB"].iloc[i],
-                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_LINK"].iloc[i],))
+                         df_book["BOOK_PRICE"].iloc[i], df_book["BOOK_RENT"].iloc[i],))
 
     # 표에 데이터 삽입
     for i in range(len(treelist)):
