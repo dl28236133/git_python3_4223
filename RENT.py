@@ -166,28 +166,31 @@ def clickRentBook():
             if AuthorName == '':
                 df_search = df_book.loc[df_book['BOOK_TITLE'].str.contains(BookName, case=False)]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
-                                         df_search['BOOK_AUTHOR'].iloc[i],
-                                         df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                         df_search['BOOK_RENT'].iloc[i]])
+                    if (df_search["BOOK_RENT"].iloc[i] == "True"):
+                        datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
+                                             df_search['BOOK_AUTHOR'].iloc[i],
+                                             df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
+                                             df_search['BOOK_RENT'].iloc[i]])
 
             elif BookName == '':
                 df_search = df_book.loc[df_book['BOOK_AUTHOR'].str.contains(AuthorName, case=False)]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
-                                         df_search['BOOK_AUTHOR'].iloc[i],
-                                         df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                         df_search['BOOK_RENT'].iloc[i]])
+                    if (df_search["BOOK_RENT"].iloc[i] == "True"):
+                        datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
+                                             df_search['BOOK_AUTHOR'].iloc[i],
+                                             df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
+                                             df_search['BOOK_RENT'].iloc[i]])
 
             else:
                 df_search = df_book.loc[
                     (df_book['BOOK_AUTHOR'].str.contains(AuthorName, case=False)) & (
                         df_book['BOOK_TITLE'].str.contains(BookName, case=False))]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
-                                         df_search['BOOK_AUTHOR'].iloc[i],
-                                         df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
-                                         df_search['BOOK_RENT'].iloc[i]])
+                    if (df_search["BOOK_RENT"].iloc[i] == "True"):
+                        datalist.append([df_search['BOOK_ISBN'].iloc[i], df_search['BOOK_TITLE'].iloc[i],
+                                             df_search['BOOK_AUTHOR'].iloc[i],
+                                             df_search['BOOK_PUB'].iloc[i], df_search['BOOK_PRICE'].iloc[i],
+                                             df_search['BOOK_RENT'].iloc[i]])
 
             for j in range(len(datalist)):
                 treeview.insert('', 'end', text=j, values=datalist[j], iid=str(j) + "번")
