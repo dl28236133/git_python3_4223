@@ -77,7 +77,7 @@ def member_search():
                 nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
                 or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
                     None] and telresultlist != [])):
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+
             datalist = []
             if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
@@ -331,11 +331,11 @@ def member_register():
                     messagebox.showinfo("회원등록실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
                     num = False
 
-                if (regidateinput.get()).isdigit() == False:
+                elif (regidateinput.get()).isdigit() == False:
                     messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
                     num = False
 
-                if (reginameinput.get()).isdigit():
+                elif (reginameinput.get()).isdigit():
                     messagebox.showinfo("회원등록실패", "회원명은 문자를 포함해야 합니다.")
                     num = False
 
@@ -472,7 +472,7 @@ def member_search_fix():
                 nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
                 or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
                     None] and telresultlist != [])):
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+
             datalist = []
             if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
@@ -559,7 +559,7 @@ def member_search_fix():
                             if len(infodateinput.get()) != 8:
                                 messagebox.showinfo("회원정보 수정 실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
                                 num = False
-                            if (infonameinput.get()).isdigit():
+                            elif (infonameinput.get()).isdigit():
                                 messagebox.showinfo("회원등록실패", "회원명은 문자를 포함해야 합니다.")
                                 num = False
 
@@ -960,7 +960,7 @@ def member_search_del():
                 nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
                 or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
                     None] and telresultlist != [])):
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+
             datalist = []
             if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
@@ -1011,7 +1011,7 @@ def member_search_del():
                 df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                 messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
-                meminfowindow.destroy()
+
 
             for row in treeview.get_children():
                 treeview.delete(row)
@@ -1079,6 +1079,8 @@ def member_search_del():
             for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
+            meminfowindow.destroy()
+            memsearchwindow.destroy()
         # 사용자가 더블클릭한 회원의 전화번호(ID) 값을 가져옴
         selectedmem = treeview.focus()
         Tel = treeview.set(selectedmem, column='1')
@@ -1270,7 +1272,7 @@ def deleted_member_search():
                 nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
                 or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
                     None] and telresultlist != [])):
-            messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
+
             datalist = []
             if tel == '':
                 df_search = df_delmem.loc[df_delmem['Member_NAME'].str.contains(name)]
