@@ -483,7 +483,9 @@ def clickReturnBook():
             messagebox.showinfo("반납", "도서를 반납합니다.")
 
             # rent.csv 파일 반납 여부 변경
-            df_rent["RENT_YN"].loc[selectedISBN] = False
+            del_index = df_rent[df_book['BOOK_ISBN'] == selectedISBN].index
+            df_rent.drop(del_index, inplace=True)
+
             df_rent.to_csv('RENT.csv', index=False, encoding='utf-8-sig')
             windowReturnBook.destroy()
         except:
