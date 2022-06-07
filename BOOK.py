@@ -44,7 +44,10 @@ def Book_add():
         imagename = askopenfilename(parent=newWindow, initialdir="image",
                                     filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
         imagename_onlyfilename = 'image/' + os.path.basename(imagename)
-        shutil.copyfile(imagename, imagename_onlyfilename)
+        try:
+            shutil.copyfile(imagename, imagename_onlyfilename)
+        except:
+            pass
         entry7.delete(0, 'end')
         entry7.insert(0, imagename_onlyfilename)
 
@@ -423,7 +426,10 @@ def bookfix_info():
             imagename = askopenfilename(parent=bookfix, initialdir="image",
                                         filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
             imagename_onlyfilename = 'image/' + os.path.basename(imagename)
-            shutil.copyfile(imagename, imagename_onlyfilename)
+            try:
+                shutil.copyfile(imagename, imagename_onlyfilename)
+            except:
+                pass
             PHOTOinput.delete(0, 'end')
             PHOTOinput.insert(0, imagename_onlyfilename)
 
