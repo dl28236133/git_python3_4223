@@ -7,8 +7,7 @@ import pandas as pd
 import os
 import os.path
 import shutil
-from PIL import ImageTk,Image
-
+from PIL import ImageTk, Image
 
 
 # --회원시작
@@ -32,47 +31,77 @@ def member_search():
             treeview.delete(row)
 
         name = nameinput.get()
-        tel = TELinput.get()
 
-        if name == '' :
+        if TELinput1.get() == '':
+            if TELinput2.get() == '':
+                tel = TELinput3.get()
+
+            elif TELinput3.get() == '':
+                tel = TELinput2.get()
+
+            else:
+                tel = TELinput2.get() + '-' + TELinput3.get()
+
+        elif TELinput2.get() == '':
+            if TELinput3.get() == '':
+                tel = TELinput1.get()
+
+            else:
+                tel = 'trash'
+
+        elif TELinput3.get() == '':
+            tel = TELinput1.get() + '-' + TELinput2.get()
+
+        else:
+            if TELinput1.get() == '' and TELinput2.get() == '' and TELinput3.get() == '':
+                tel = ''
+
+            else:
+                tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
+        if name == '':
             nameresultlist = [None]
 
-        else :
+        else:
             df_search = df_member[df_member['Member_NAME'].str.contains(name)]
             nameresultlist = list(df_search['Member_NAME'])
 
-        if tel == '' :
+        if tel == '':
             telresultlist = [None]
 
-        else :
+        else:
             df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
             telresultlist = list(df_search['Member_TEL'])
 
-
-        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
-            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
-            if tel == '' :
+            if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            elif name == '' :
+            elif name == '':
                 df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            else :
-                df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-        
-            for j in range(len(datalist)) :
+            else:
+                df_search = df_member.loc[
+                    (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
+            for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
         else:
@@ -101,12 +130,11 @@ def member_search():
         infoTELlabel = Label(meminfowindow, text='전화번호', bg='LightSkyBlue1')
         infoemaillabel = Label(meminfowindow, text='이메일', bg='LightSkyBlue1')
 
-        
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
+        # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
+        try:
+            if math.isnan(imagefilename) == False:
                 img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
+                img = img.resize((150, 200), Image.ANTIALIAS)
                 meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
@@ -114,13 +142,12 @@ def member_search():
             else:
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
-        except :
-                img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
-                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
-
+        except:
+            img = Image.open(imagefilename)
+            img = img.resize((150, 200), Image.ANTIALIAS)
+            meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
+            infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
+            infophotolabel.image = meminfophoto
 
         # 회원정보(실제 회원 정보) 표시할 레이블
         infonameinput = Label(meminfowindow, text=df_member['Member_NAME'].loc[Tel], width=25, bg='white', anchor='w')
@@ -173,16 +200,17 @@ def member_search():
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
     nameinput = Entry(memsearchwindow, width=30)
-    TELinput = Entry(memsearchwindow, width=30)
+    TELinput1 = Entry(memsearchwindow, width=5)
+    TELinput2 = Entry(memsearchwindow, width=5)
+    TELinput3 = Entry(memsearchwindow, width=5)
 
-
-    #회원정보 표시할 표 생성, 더블클릭 이벤트 지정
+    # 회원정보 표시할 표 생성, 더블클릭 이벤트 지정
 
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_dbclick)
 
-    treeview.column("#1", width=100, anchor="center" )
+    treeview.column("#1", width=100, anchor="center")
     treeview.heading("1", text="전화번호", anchor="center")
 
     treeview.column("2", width=100, anchor="center")
@@ -198,11 +226,12 @@ def member_search():
     treeview.heading("5", text="이메일", anchor="center")
 
     datalist = []
-    for i in range(len(df_member.index)) :
-        datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
-                         df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+    for i in range(len(df_member.index)):
+        datalist.append(
+            [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
+             df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
 
-    for j in range(len(datalist)) :
+    for j in range(len(datalist)):
         treeview.insert('', 'end', values=datalist[j])
 
     # 검색 버튼
@@ -212,7 +241,9 @@ def member_search():
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
     TELlabel.place(x=30, y=60)
-    TELinput.place(x=120, y=60)
+    TELinput1.place(x=120, y=60)
+    TELinput2.place(x=170, y=60)
+    TELinput3.place(x=220, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
 
@@ -225,11 +256,14 @@ def member_register():
     # 회원등록 - 파일찾기 버튼 클릭 시
     def image_btn():
 
-        imagename = askopenfilename(parent = memregiwindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
+        imagename = askopenfilename(parent=memregiwindow, initialdir="image",
+                                    filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
         if imagename != '':
             imagename_onlyfilename = 'image/' + os.path.basename(imagename)
-            if imagename != imagename_onlyfilename :
+            try:
                 shutil.copyfile(imagename, imagename_onlyfilename)
+            except:
+                pass
             regiphotoinput.configure(state='normal')
             regiphotoinput.delete(0, 'end')
             regiphotoinput.insert(0, imagename_onlyfilename)
@@ -245,79 +279,81 @@ def member_register():
     # 회원등록 - 등록 버튼 클릭 시
     def regi_btn():
         df_member_ori = pd.read_csv("Member.csv", encoding='UTF-8-sig')
-        df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM']==False]
+        df_member = df_member_ori.loc[df_member_ori['Member_DEL_MEM'] == False]
         df_member = df_member.set_index(df_member['Member_TEL'])
 
-        regiTELinput = regiTELinput1.get()+'-'+regiTELinput2.get()+'-'+regiTELinput3.get()
+        regiTELinput = regiTELinput1.get() + '-' + regiTELinput2.get() + '-' + regiTELinput3.get()
         num = True
 
-        try :
-            if regiTELinput1.get()[0] == '0' :
+        try:
+            if regiTELinput1.get()[0] == '0':
                 int(regiTELinput1.get()[1:])
 
-            else :
+            else:
                 int(regiTELinput1.get())
-                
+
             int(regiTELinput2.get())
             int(regiTELinput3.get())
-            
-            if int(regiTELinput1.get()) < 0 or int(regiTELinput2.get()) < 0 or int(regiTELinput3.get()) < 0 :
+
+            if int(regiTELinput1.get()) < 0 or int(regiTELinput2.get()) < 0 or int(regiTELinput3.get()) < 0:
                 messagebox.showinfo("회원등록실패", "올바른 전화번호 값을 입력하세요.")
                 num = False
 
-        except :
-            if regiTELinput1.get()=='' and regiTELinput2.get()=='' and regiTELinput3.get()=='' :
+        except:
+            if regiTELinput1.get() == '' and regiTELinput2.get() == '' and regiTELinput3.get() == '':
                 messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
-                
 
-            else :
+
+            else:
                 messagebox.showinfo("회원등록실패", "올바른 전화번호 값을 입력하세요.")
 
             num = False
 
-        if regiTELinput in list(df_member['Member_TEL']) :
+        if regiTELinput in list(df_member['Member_TEL']):
             messagebox.showinfo("회원등록실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
 
-        elif reginameinput.get()=='' or regidateinput.get()=='' or regiemailinput.get()=='' :
-            if regiTELinput1.get()=='' or regiTELinput2.get()=='' or regiTELinput3.get()=='' :
+        elif reginameinput.get() == '' or regidateinput.get() == '' or regiemailinput.get() == '':
+            if regiTELinput1.get() == '' or regiTELinput2.get() == '' or regiTELinput3.get() == '':
                 num = False
 
-            else :
+            else:
                 messagebox.showinfo("회원등록실패", "입력되지 않은 회원정보가 있습니다.")
-        
-        elif (len(regiTELinput1.get()) !=3 or len(regiTELinput2.get()) !=4 or len(regiTELinput3.get()) !=4) and num == True  :
+
+        elif (len(regiTELinput1.get()) != 3 or len(regiTELinput2.get()) != 4 or len(
+                regiTELinput3.get()) != 4) and num == True:
             messagebox.showinfo("회원등록실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
 
 
         else:
-            try :
-                if num == True :
-                    int(regidateinput.get())
 
-                    if len(regidateinput.get())!=8 :
-                        messagebox.showinfo("회원등록실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
-                        num = False
-                    
-                    if num == True :
-                        new_member = {"Member_TEL": regiTELinput,
-                                    "Member_NAME": reginameinput.get(),
-                                    "Member_BIRTHDATE": regidateinput.get(),
-                                    "Member_GENDER": gender.get(),
-                                    "Member_EMAIL": regiemailinput.get(),
-                                    "Member_IMAGE": regiphotoinput.get(),
-                                    "Member_DEL_MEM": False}
+            if num == True:
+                if len(regidateinput.get()) != 8:
+                    messagebox.showinfo("회원등록실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
+                    num = False
 
-                        df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
-                        df_member_ori = df_member_ori.append(new_member,ignore_index=True)
-                        df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
-                        df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
-                        messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
-                        memregiwindow.destroy()
-            
-            except :
-                messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
+                if (regidateinput.get()).isdigit() == False:
+                    messagebox.showinfo("회원등록실패", "생년월일은 숫자만 입력 가능합니다.")
+                    num = False
 
+                if (reginameinput.get()).isdigit():
+                    messagebox.showinfo("회원등록실패", "회원명은 문자를 포함해야 합니다.")
+                    num = False
 
+                if num == True:
+                    new_member = {"Member_TEL": regiTELinput,
+                                  "Member_NAME": reginameinput.get(),
+                                  "Member_BIRTHDATE": regidateinput.get(),
+                                  "Member_GENDER": gender.get(),
+                                  "Member_EMAIL": regiemailinput.get(),
+                                  "Member_IMAGE": regiphotoinput.get(),
+                                  "Member_DEL_MEM": False}
+
+                    df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                    df_member_ori = df_member_ori.append(new_member, ignore_index=True)
+                    df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
+                    df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
+                    messagebox.showinfo("회원등록완료", "회원등록이 완료되었습니다.")
+                    memregiwindow.destroy()
 
     # 회원등록 창 생성
     memregiwindow = Tk()
@@ -390,46 +426,77 @@ def member_search_fix():
             treeview.delete(row)
 
         name = nameinput.get()
-        tel = TELinput.get()
 
-        if name == '' :
+        if TELinput1.get() == '':
+            if TELinput2.get() == '':
+                tel = TELinput3.get()
+
+            elif TELinput3.get() == '':
+                tel = TELinput2.get()
+
+            else:
+                tel = TELinput2.get() + '-' + TELinput3.get()
+
+        elif TELinput2.get() == '':
+            if TELinput3.get() == '':
+                tel = TELinput1.get()
+
+            else:
+                tel = 'trash'
+
+        elif TELinput3.get() == '':
+            tel = TELinput1.get() + '-' + TELinput2.get()
+
+        else:
+            if TELinput1.get() == '' and TELinput2.get() == '' and TELinput3.get() == '':
+                tel = ''
+
+            else:
+                tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
+        if name == '':
             nameresultlist = [None]
 
-        else :
+        else:
             df_search = df_member[df_member['Member_NAME'].str.contains(name)]
             nameresultlist = list(df_search['Member_NAME'])
 
-        if tel == '' :
+        if tel == '':
             telresultlist = [None]
 
-        else :
+        else:
             df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
             telresultlist = list(df_search['Member_TEL'])
 
-
-        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
-            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
-            if tel == '' :
+            if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            elif name == '' :
+            elif name == '':
                 df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            else :
-                df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-        
-            for j in range(len(datalist)) :
+            else:
+                df_search = df_member.loc[
+                    (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
         else:
@@ -445,104 +512,110 @@ def member_search_fix():
             nonlocal df_member
             nonlocal df_member_ori
 
-            infoTELinput = infoTELinput1.get()+'-'+infoTELinput2.get()+'-'+infoTELinput3.get()
+            infoTELinput = infoTELinput1.get() + '-' + infoTELinput2.get() + '-' + infoTELinput3.get()
             num = True
 
-            try :
-                if infoTELinput1.get()[0] == '0' :
+            try:
+                if infoTELinput1.get()[0] == '0':
                     int(infoTELinput1.get()[1:])
 
-                else :
+                else:
                     int(infoTELinput1.get())
-                
+
                 int(infoTELinput2.get())
                 int(infoTELinput3.get())
-            
-                if int(infoTELinput1.get()) < 0 or int(infoTELinput2.get()) < 0 or int(infoTELinput3.get()) < 0 :
+
+                if int(infoTELinput1.get()) < 0 or int(infoTELinput2.get()) < 0 or int(infoTELinput3.get()) < 0:
                     messagebox.showinfo("회원정보 수정 실패", "올바른 전화번호 값을 입력하세요.")
                     num = False
 
-            except :
-                if infoTELinput1.get()=='' and infoTELinput2.get()=='' and infoTELinput3.get()=='' :
+            except:
+                if infoTELinput1.get() == '' and infoTELinput2.get() == '' and infoTELinput3.get() == '':
                     messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
 
-                else :
+                else:
                     messagebox.showinfo("회원정보 수정 실패", "올바른 전화번호 값을 입력하세요.")
 
                 num = False
 
-            if infoTELinput == df_member['Member_TEL'].loc[Tel] :
-                if infonameinput.get()=='' or infodateinput.get()=='' or infoemailinput.get()=='' :
-                    if infoTELinput1.get()=='' or infoTELinput2.get()=='' or infoTELinput3.get()=='' :
+
+            if infoTELinput == df_member['Member_TEL'].loc[Tel]:
+                if infonameinput.get() == '' or infodateinput.get() == '' or infoemailinput.get() == '':
+                    if infoTELinput1.get() == '' or infoTELinput2.get() == '' or infoTELinput3.get() == '':
                         num = False
 
-                    else :
+                    else:
                         messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
 
-                elif (len(infoTELinput1.get()) !=3 or len(infoTELinput2.get()) !=4 or len(infoTELinput3.get()) !=4) and num == True  :
+                elif (len(infoTELinput1.get()) != 3 or len(infoTELinput2.get()) != 4 or len(
+                        infoTELinput3.get()) != 4) and num == True:
                     messagebox.showinfo("회원정보 수정 실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
-                    
-                else :
-                    try :
-                        if num == True :
+
+                else:
+                    try:
+                        if num == True:
                             int(infodateinput.get())
 
-                            if len(infodateinput.get())!=8 :
+                            if len(infodateinput.get()) != 8:
                                 messagebox.showinfo("회원정보 수정 실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
                                 num = False
+                            if (infonameinput.get()).isdigit():
+                                messagebox.showinfo("회원등록실패", "회원명은 문자를 포함해야 합니다.")
+                                num = False
 
-                            if num == True :
+                            if num == True:
                                 df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
                                 df_member_ori["Member_NAME"].loc[Tel] = infonameinput.get()
                                 df_member_ori["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
                                 df_member_ori["Member_EMAIL"].loc[Tel] = infoemailinput.get()
                                 df_member_ori["Member_GENDER"].loc[Tel] = gender.get()
                                 df_member_ori["Member_IMAGE"].loc[Tel] = imagefilename
-            
+
                                 df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                                 messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
                                 meminfowindow.destroy()
-            
-                    except :
+
+                    except:
                         messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
-     
-            elif infoTELinput in list(df_member['Member_TEL']) :
+
+            elif infoTELinput in list(df_member['Member_TEL']):
                 messagebox.showinfo("회원정보 수정 실패", "이미 존재하는 회원입니다.(전화번호 중복 불가)")
 
-            elif infonameinput.get()=='' or infodateinput.get()=='' or infoemailinput.get()=='' :
-                if infoTELinput1.get()=='' or infoTELinput2.get()=='' or infoTELinput3.get()=='' :
+            elif infonameinput.get() == '' or infodateinput.get() == '' or infoemailinput.get() == '':
+                if infoTELinput1.get() == '' or infoTELinput2.get() == '' or infoTELinput3.get() == '':
                     num = False
 
-                else :
+                else:
                     messagebox.showinfo("회원정보 수정 실패", "입력되지 않은 회원정보가 있습니다.")
 
-            elif (len(infoTELinput1.get()) !=3 or len(infoTELinput2.get()) !=4 or len(infoTELinput3.get()) !=4) and num == True  :
-                    messagebox.showinfo("회원정보 수정 실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
+            elif (len(infoTELinput1.get()) != 3 or len(infoTELinput2.get()) != 4 or len(
+                    infoTELinput3.get()) != 4) and num == True:
+                messagebox.showinfo("회원정보 수정 실패", "전화번호는 000-0000-0000 형식으로 입력해야 합니다.")
 
             else:
-                try :
-                    if num == True :
+                try:
+                    if num == True:
                         int(infodateinput.get())
 
-                        if len(infodateinput.get())!=8 :
+                        if len(infodateinput.get()) != 8:
                             messagebox.showinfo("회원등록실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
                             num = False
 
-                        if num == True :
+                        if num == True:
                             df_member["Member_TEL"].loc[Tel] = infoTELinput
                             df_member["Member_NAME"].loc[Tel] = infonameinput.get()
                             df_member["Member_BIRTHDATE"].loc[Tel] = infodateinput.get()
                             df_member["Member_EMAIL"].loc[Tel] = infoemailinput.get()
                             df_member["Member_GENDER"].loc[Tel] = gender.get()
                             df_member["Member_IMAGE"].loc[Tel] = imagefilename
-            
+
                             df_member.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                             messagebox.showinfo("회원정보수정", "회원정보수정이 완료되었습니다.")
                             meminfowindow.destroy()
-            
-                except :
+
+                except:
                     messagebox.showinfo("회원정보 수정 실패", "생년월일은 숫자만 입력 가능합니다.")
 
             for row in treeview.get_children():
@@ -553,74 +626,108 @@ def member_search_fix():
             df_member = df_member.set_index(df_member['Member_TEL'])
 
             name = nameinput.get()
-            tel = TELinput.get()
+            if TELinput1.get() == '':
+                if TELinput2.get() == '':
+                    tel = TELinput3.get()
 
-            if name == '' :
+                elif TELinput3.get() == '':
+                    tel = TELinput2.get()
+
+                else:
+                    tel = TELinput2.get() + '-' + TELinput3.get()
+
+            elif TELinput2.get() == '':
+                if TELinput3.get() == '':
+                    tel = TELinput1.get()
+
+                else:
+                    tel = 'trash'
+
+            elif TELinput3.get() == '':
+                tel = TELinput1.get() + '-' + TELinput2.get()
+
+            else:
+                if TELinput1.get() == '' and TELinput2.get() == '' and TELinput3.get() == '':
+                    tel = ''
+
+                else:
+                    tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
+            if name == '':
                 nameresultlist = [None]
 
-            else :
+            else:
                 df_search = df_member[df_member['Member_NAME'].str.contains(name)]
                 nameresultlist = list(df_search['Member_NAME'])
 
-            if tel == '' :
+            if tel == '':
                 telresultlist = [None]
 
-            else :
+            else:
                 df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
                 telresultlist = list(df_search['Member_TEL'])
 
-
-            if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
-            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
+            if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                    nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                    or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                        None] and telresultlist != [])):
                 datalist = []
-                if tel == '' :
+                if tel == '':
                     df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    for i in range(len(df_search.index)):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-                elif name == '' :
+                elif name == '':
                     df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    for i in range(len(df_search.index)):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-                else :
-                    df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                else:
+                    df_search = df_member.loc[
+                        (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                    for i in range(len(df_search.index)):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            else :
+            else:
                 datalist = []
-                for i in range(len(df_member.index)) :
-                    datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
+                for i in range(len(df_member.index)):
+                    datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i],
+                                     df_member['Member_BIRTHDATE'].iloc[i],
                                      df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
-        
-            for j in range(len(datalist)) :
+
+            for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
         # 회원정보수정 - 회원검색 - 회원정보 - 이미지 변경 버튼 클릭
         def photo_fix_btn():
 
-            imagename = askopenfilename(parent = meminfowindow, initialdir = "image", filetypes=(("png 파일", "*.png"),("gif 파일", "*.gif"),("모든 파일","*.*")))
+            imagename = askopenfilename(parent=meminfowindow, initialdir="image",
+                                        filetypes=(("png 파일", "*.png"), ("gif 파일", "*.gif"), ("모든 파일", "*.*")))
             global imagefilename
-            try :
+            try:
                 imagefilename = os.path.basename(imagename)
-                if math.isnan(imagefilename)==False :
+                if math.isnan(imagefilename) == False:
                     img = Image.open(imagefilename)
-                    img = img.resize((150,200) , Image.ANTIALIAS)
+                    img = img.resize((150, 200), Image.ANTIALIAS)
                     meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                     infophotolabel.configure(width=150, height=200, image=meminfophoto)
                     infophotolabel.image = meminfophoto
 
-            except :
-                if imagefilename!='' :
+            except:
+                if imagefilename != '':
                     imagefilename = 'image/' + os.path.basename(imagename)
-                    if os.path.isfile(imagefilename) == False :
+                    try:
                         shutil.copyfile(imagename, imagefilename)
+                    except:
+                        pass
                     img = Image.open(imagefilename)
-                    img = img.resize((150,200) , Image.ANTIALIAS)
+                    img = img.resize((150, 200), Image.ANTIALIAS)
                     meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                     infophotolabel.configure(width=150, height=200, image=meminfophoto)
                     infophotolabel.image = meminfophoto
@@ -653,25 +760,24 @@ def member_search_fix():
         infoTELlabel = Label(meminfowindow, text='전화번호', bg='LightSkyBlue1')
         infoemaillabel = Label(meminfowindow, text='이메일', bg='LightSkyBlue1')
 
-
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
+        # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
+        try:
+            if math.isnan(imagefilename) == False:
                 img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
+                img = img.resize((150, 200), Image.ANTIALIAS)
                 meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
 
-            else :
+            else:
                 infophotolabel = Label(meminfowindow, width=21, height=13, relief='solid')
 
-        except :
-                img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
-                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
+        except:
+            img = Image.open(imagefilename)
+            img = img.resize((150, 200), Image.ANTIALIAS)
+            meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
+            infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
+            infophotolabel.image = meminfophoto
 
         # 회원정보를 입력받을 엔트리
         infonameinput = Entry(meminfowindow, width=25)
@@ -731,6 +837,7 @@ def member_search_fix():
         infoclosebutton.place(x=440, y=250)
         infofixbutton.place(x=390, y=250)
         photofixbutton.place(x=60, y=230)
+
     # 회원정보수정-회원정보 끝
 
     # 회원정보 표(treeview) 회원 더블클릭시 이벤트
@@ -752,15 +859,16 @@ def member_search_fix():
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
     nameinput = Entry(memsearchwindow, width=30)
-    TELinput = Entry(memsearchwindow, width=30)
+    TELinput1 = Entry(memsearchwindow, width=5)
+    TELinput2 = Entry(memsearchwindow, width=5)
+    TELinput3 = Entry(memsearchwindow, width=5)
 
-
-    #회원정보 표시할 표 생성
+    # 회원정보 표시할 표 생성
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_fix_dbclick)
 
-    treeview.column("#1", width=100, anchor="center" )
+    treeview.column("#1", width=100, anchor="center")
     treeview.heading("1", text="전화번호", anchor="center")
 
     treeview.column("2", width=100, anchor="center")
@@ -776,11 +884,12 @@ def member_search_fix():
     treeview.heading("5", text="이메일", anchor="center")
 
     datalist = []
-    for i in range(len(df_member.index)) :
-        datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
-                         df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+    for i in range(len(df_member.index)):
+        datalist.append(
+            [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
+             df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
 
-    for j in range(len(datalist)) :
+    for j in range(len(datalist)):
         treeview.insert('', 'end', values=datalist[j])
 
     # 검색 버튼
@@ -790,7 +899,9 @@ def member_search_fix():
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
     TELlabel.place(x=30, y=60)
-    TELinput.place(x=120, y=60)
+    TELinput1.place(x=120, y=60)
+    TELinput2.place(x=170, y=60)
+    TELinput3.place(x=220, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
 
@@ -803,48 +914,77 @@ def member_search_del():
             treeview.delete(row)
 
         name = nameinput.get()
-        tel = TELinput.get()
 
-        if name == '' :
+        if  TELinput1.get() == '':
+            if TELinput2.get() == '':
+                tel = TELinput3.get()
+
+            elif TELinput3.get() == '':
+                tel = TELinput2.get()
+
+            else:
+                tel = TELinput2.get() + '-' + TELinput3.get()
+
+        elif TELinput2.get() == '':
+            if TELinput3.get() == '':
+                tel = TELinput1.get()
+
+            else:
+                tel = 'trash'
+
+        elif TELinput3.get() == '':
+            tel = TELinput1.get() + '-' + TELinput2.get()
+
+        else:
+            if TELinput1.get() == '' and TELinput2.get() == '' and TELinput3.get() == '':
+                tel = ''
+
+            else:
+                tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
+        if name == '':
             nameresultlist = [None]
-
-
 
         else:
             df_search = df_member[df_member['Member_NAME'].str.contains(name)]
             nameresultlist = list(df_search['Member_NAME'])
 
-        if tel == '' :
+        if tel == '':
             telresultlist = [None]
 
-        else :
+        else:
             df_search = df_member[df_member['Member_TEL'].str.contains(tel)]
             telresultlist = list(df_search['Member_TEL'])
-            
-       
-        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
-            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
+
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
-            if tel == '' :
+            if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            elif name == '' :
+            elif name == '':
                 df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            else :
-                df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-        
-            for j in range(len(datalist)) :
+            else:
+                df_search = df_member.loc[
+                    (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
         else:
@@ -859,15 +999,15 @@ def member_search_del():
             nonlocal df_member_ori
             df_rent = pd.read_csv("RENT.csv", encoding='UTF-8-sig')
 
-            if Tel in list(df_rent['USER_PHONE']) :
+            if Tel in list(df_rent['USER_PHONE']):
                 messagebox.showinfo("회원탈퇴 실패", "대출중인 책이 있습니다. 반납처리 후 다시 시도해주세요.")
 
-            else :
+            else:
                 df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
                 df_member_ori["Member_DEL_MEM"].loc[Tel] = True
 
                 df_member_ori = df_member_ori.set_index(df_member_ori['Member_TEL'])
-                
+
                 df_member_ori.to_csv('Member.csv', index=False, encoding='utf-8-sig')
 
                 messagebox.showinfo("회원탈퇴", "회원탈퇴가 완료되었습니다.")
@@ -881,29 +1021,59 @@ def member_search_del():
             df_member = df_member.set_index(df_member['Member_TEL'])
 
             name = nameinput.get()
-            tel = TELinput.get()
+            if TELinput1.get() == '':
+                if TELinput2.get() == '':
+                    tel = TELinput3.get()
 
-            if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(df_member['Member_TEL'].str.contains(tel)) :
+                elif TELinput3.get() == '':
+                    tel = TELinput2.get()
+
+                else:
+                    tel = TELinput2.get() + '-' + TELinput3.get()
+
+            elif TELinput2.get() == '':
+                if TELinput3.get() == '':
+                    tel = TELinput1.get()
+
+                else:
+                    tel = 'trash'
+
+            elif TELinput3.get() == '':
+                tel = TELinput1.get() + '-' + TELinput2.get()
+
+            else:
+                if TELinput1.get() == '' and TELinput2.get() == '' and TELinput3.get() == '':
+                    tel = ''
+
+                else:
+                    tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
+            if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(
+                    df_member['Member_TEL'].str.contains(tel)):
                 datalist = []
-                if tel == '' :
+                if tel == '':
                     df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    for i in range(len(df_search.index)):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-                elif name == '' :
+                elif name == '':
                     df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    for i in range(len(df_search.index)):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-                else :
-                    df_search = df_member.loc[(df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
-                    for i in range(len(df_search.index)) :
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-        
-            for j in range(len(datalist)) :
+                else:
+                    df_search = df_member.loc[
+                        (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
+                    for i in range(len(df_search.index)):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
             for j in range(len(datalist)):
@@ -924,16 +1094,16 @@ def member_search_del():
 
         # 회원정보 인덱스 표시할 레이블
         infonamelabel = Label(meminfowindow, text='회원명', bg='LightSkyBlue1')
-        infodatelabel = Label(meminfowindow, text='생년월일',  bg='LightSkyBlue1')
-        infogenderlabel = Label(meminfowindow, text='성별',bg='LightSkyBlue1')
-        infoTELlabel = Label(meminfowindow, text='전화번호',  bg='LightSkyBlue1')
-        infoemaillabel = Label(meminfowindow, text='이메일',  bg='LightSkyBlue1')
-        
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
+        infodatelabel = Label(meminfowindow, text='생년월일', bg='LightSkyBlue1')
+        infogenderlabel = Label(meminfowindow, text='성별', bg='LightSkyBlue1')
+        infoTELlabel = Label(meminfowindow, text='전화번호', bg='LightSkyBlue1')
+        infoemaillabel = Label(meminfowindow, text='이메일', bg='LightSkyBlue1')
+
+        # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
+        try:
+            if math.isnan(imagefilename) == False:
                 img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
+                img = img.resize((150, 200), Image.ANTIALIAS)
                 meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
@@ -942,12 +1112,12 @@ def member_search_del():
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
 
-        except :
-                img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
-                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
+        except:
+            img = Image.open(imagefilename)
+            img = img.resize((150, 200), Image.ANTIALIAS)
+            meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
+            infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
+            infophotolabel.image = meminfophoto
 
         # 회원정보(실제 회원 정보) 표시할 레이블
         infonameinput = Label(meminfowindow, text=df_member['Member_NAME'].loc[Tel], width=25, bg='white', anchor='w')
@@ -999,9 +1169,11 @@ def member_search_del():
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
     nameinput = Entry(memsearchwindow, width=30)
-    TELinput = Entry(memsearchwindow, width=30)
+    TELinput1 = Entry(memsearchwindow, width=5)
+    TELinput2 = Entry(memsearchwindow, width=5)
+    TELinput3 = Entry(memsearchwindow, width=5)
 
-    #회원정보 표시할 표 생성, 더블클릭 이벤트 지정
+    # 회원정보 표시할 표 생성, 더블클릭 이벤트 지정
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', member_info_del_dbclick)
@@ -1022,11 +1194,12 @@ def member_search_del():
     treeview.heading("5", text="이메일", anchor="center")
 
     datalist = []
-    for i in range(len(df_member.index)) :
-        datalist.append([df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i], 
-                         df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+    for i in range(len(df_member.index)):
+        datalist.append(
+            [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
+             df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
 
-    for j in range(len(datalist)) :
+    for j in range(len(datalist)):
         treeview.insert('', 'end', values=datalist[j])
 
     # 검색 버튼
@@ -1036,7 +1209,9 @@ def member_search_del():
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
     TELlabel.place(x=30, y=60)
-    TELinput.place(x=120, y=60)
+    TELinput1.place(x=120, y=60)
+    TELinput2.place(x=170, y=60)
+    TELinput3.place(x=220, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
 
@@ -1049,49 +1224,80 @@ def deleted_member_search():
             treeview.delete(row)
 
         name = nameinput.get()
-        tel = TELinput.get()
 
-        if name == '' :
+        if TELinput1.get() == '':
+            if TELinput2.get() == '':
+                tel = TELinput3.get()
+
+            elif TELinput3.get() == '':
+                tel = TELinput2.get()
+
+            else:
+                tel = TELinput2.get() + '-' + TELinput3.get()
+
+        elif TELinput2.get() == '':
+            if TELinput3.get() == '':
+                tel = TELinput1.get()
+
+            else:
+                tel = 'trash'
+
+        elif TELinput3.get() == '':
+            tel = TELinput1.get() + '-' + TELinput2.get()
+
+        else:
+            if TELinput1.get() == '' and TELinput2.get() == '' and TELinput3.get() == '':
+                tel = ''
+
+            else:
+                tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
+        if name == '':
             nameresultlist = [None]
 
-        else :
+        else:
             df_search = df_delmem[df_delmem['Member_NAME'].str.contains(name)]
             nameresultlist = list(df_search['Member_NAME'])
 
-        if tel == '' :
+        if tel == '':
             telresultlist = [None]
 
-        else :
+        else:
             df_search = df_delmem[df_delmem['Member_TEL'].str.contains(tel)]
             telresultlist = list(df_search['Member_TEL'])
 
-    
-        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (nameresultlist == [None] and telresultlist != [] and telresultlist !=[None]) 
-            or (nameresultlist != [None] and nameresultlist != [] and telresultlist !=[None] and telresultlist !=[])) :
+        if ((nameresultlist != [None] and nameresultlist != [] and telresultlist == [None]) or (
+                nameresultlist == [None] and telresultlist != [] and telresultlist != [None])
+                or (nameresultlist != [None] and nameresultlist != [] and telresultlist != [
+                    None] and telresultlist != [])):
             messagebox.showinfo("회원검색", "검색이 완료되었습니다.")
             datalist = []
-            if tel == '' :
+            if tel == '':
                 df_search = df_delmem.loc[df_delmem['Member_NAME'].str.contains(name)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            elif name == '' :
+            elif name == '':
                 df_search = df_delmem.loc[df_delmem['Member_TEL'].str.contains(tel)]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
-            else :
-                df_search = df_delmem.loc[(df_delmem['Member_TEL'].str.contains(tel)) & (df_delmem['Member_NAME'].str.contains(name))]
-                for i in range(len(df_search.index)) :
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i], df_search['Member_BIRTHDATE'].iloc[i], 
-                                df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
-        
-            for j in range(len(datalist)) :
+            else:
+                df_search = df_delmem.loc[
+                    (df_delmem['Member_TEL'].str.contains(tel)) & (df_delmem['Member_NAME'].str.contains(name))]
+                for i in range(len(df_search.index)):
+                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                     df_search['Member_BIRTHDATE'].iloc[i],
+                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+
+            for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
 
-        else :
+        else:
             messagebox.showinfo("오류", "존재하지 않는 회원이거나, 탈퇴처리 된 회원입니다.")
 
     # 탈퇴회원검색 - 회원 선택 시 회원정보 창 출력
@@ -1111,17 +1317,17 @@ def deleted_member_search():
         meminfowindow.configure(bg='LightSkyBlue1')
 
         # 탈퇴회원정보 인덱스 표시할 레이블
-        infonamelabel = Label(meminfowindow, text='회원명',  bg='LightSkyBlue1')
-        infodatelabel = Label(meminfowindow, text='생년월일',  bg='LightSkyBlue1')
-        infogenderlabel = Label(meminfowindow, text='성별',  bg='LightSkyBlue1')
-        infoTELlabel = Label(meminfowindow, text='전화번호',  bg='LightSkyBlue1')
-        infoemaillabel = Label(meminfowindow, text='이메일',  bg='LightSkyBlue1')
+        infonamelabel = Label(meminfowindow, text='회원명', bg='LightSkyBlue1')
+        infodatelabel = Label(meminfowindow, text='생년월일', bg='LightSkyBlue1')
+        infogenderlabel = Label(meminfowindow, text='성별', bg='LightSkyBlue1')
+        infoTELlabel = Label(meminfowindow, text='전화번호', bg='LightSkyBlue1')
+        infoemaillabel = Label(meminfowindow, text='이메일', bg='LightSkyBlue1')
 
-        #이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
-        try :
-            if math.isnan(imagefilename)==False :
+        # 이미지 파일이 들어갈 레이블 처리, 이미지 파일이 등록되지 않은 경우 nan값을 반환하므로 isnan함수로 처리
+        try:
+            if math.isnan(imagefilename) == False:
                 img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
+                img = img.resize((150, 200), Image.ANTIALIAS)
                 meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
                 infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
                 infophotolabel.image = meminfophoto
@@ -1129,13 +1335,12 @@ def deleted_member_search():
             else:
                 infophotolabel = Label(meminfowindow, width=20, height=13, relief='solid')
 
-        except :
-                img = Image.open(imagefilename)
-                img = img.resize((150,200) , Image.ANTIALIAS)
-                meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
-                infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
-                infophotolabel.image = meminfophoto
-
+        except:
+            img = Image.open(imagefilename)
+            img = img.resize((150, 200), Image.ANTIALIAS)
+            meminfophoto = ImageTk.PhotoImage(img, master=meminfowindow)
+            infophotolabel = Label(meminfowindow, width=150, height=200, relief='solid', image=meminfophoto)
+            infophotolabel.image = meminfophoto
 
         # 탈퇴회원정보(실제 회원 정보) 표시할 레이블
         infonameinput = Label(meminfowindow, text=df_delmem['Member_NAME'].loc[Tel], width=25, bg='white', anchor='w')
@@ -1188,12 +1393,14 @@ def deleted_member_search():
     namelabel = Label(memsearchwindow, text='회원명', bg='LightSkyBlue1')
     TELlabel = Label(memsearchwindow, text='전화번호', bg='LightSkyBlue1')
     nameinput = Entry(memsearchwindow, width=30)
-    TELinput = Entry(memsearchwindow, width=30)
+    TELinput1 = Entry(memsearchwindow, width=5)
+    TELinput2 = Entry(memsearchwindow, width=5)
+    TELinput3 = Entry(memsearchwindow, width=5)
 
     # 검색 버튼
     searchbutton = Button(memsearchwindow, text="검색", width=10, command=deleted_search_btn)
 
-    #회원정보 표시할 표 생성
+    # 회원정보 표시할 표 생성
     treeview = tkinter.ttk.Treeview(memsearchwindow, columns=["1", "2", "3", "4", "5"], show='headings')
     treeview.pack()
     treeview.bind('<Double-Button-1>', deleted_member_info_dbclick)
@@ -1214,18 +1421,21 @@ def deleted_member_search():
     treeview.heading("5", text="이메일", anchor="center")
 
     datalist = []
-    for i in range(len(df_delmem.index)) :
-        datalist.append([df_delmem['Member_TEL'].iloc[i], df_delmem['Member_NAME'].iloc[i], df_delmem['Member_BIRTHDATE'].iloc[i], 
-                         df_delmem['Member_GENDER'].iloc[i], df_delmem['Member_EMAIL'].iloc[i]])
+    for i in range(len(df_delmem.index)):
+        datalist.append(
+            [df_delmem['Member_TEL'].iloc[i], df_delmem['Member_NAME'].iloc[i], df_delmem['Member_BIRTHDATE'].iloc[i],
+             df_delmem['Member_GENDER'].iloc[i], df_delmem['Member_EMAIL'].iloc[i]])
 
-    for j in range(len(datalist)) :
+    for j in range(len(datalist)):
         treeview.insert('', 'end', values=datalist[j])
 
     # 생성한 위젯 위치 지정
     namelabel.place(x=30, y=20)
     nameinput.place(x=120, y=20)
     TELlabel.place(x=30, y=60)
-    TELinput.place(x=120, y=60)
+    TELinput1.place(x=120, y=60)
+    TELinput2.place(x=170, y=60)
+    TELinput3.place(x=220, y=60)
     searchbutton.place(x=350, y=20)
     treeview.place(x=25, y=150)
 

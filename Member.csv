@@ -1,6 +1,6 @@
 ﻿Member_TEL,Member_NAME,Member_BIRTHDATE,Member_GENDER,Member_EMAIL,Member_IMAGE,Member_DEL_MEM
 010-1234-5678,회원명,20220531,남,deu@gmail.com,,False
-010-5678-1234,회원,20220602,남,deu@naver.com,image/moyaho.png,False
+010-5678-1234,회원,20220602,남,deu@naver.com,image/moyaho.png,True
 010-1111-2222,회원명,20220602,여,deu@hanmail.net,image/moyaho.png,False
 010-2222-2222,이미지,20220620,남,image@gmail.com,image/moyaho.png,False
-010-9023-9215,박철진,19980702,남,dl28236133@naver.com,image/5.png,False
+010-9023-9215,박철진,19980703,남,dl28236133@naver.com,image/5.png,False
