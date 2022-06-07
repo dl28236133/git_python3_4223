@@ -59,6 +59,7 @@ def member_search():
             else:
                 tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
 
+
         if (TELinput1.get() != '') and ((TELinput1.get()).isdigit() == False) :
             tel = 'trash'
 
@@ -67,6 +68,7 @@ def member_search():
 
         elif (TELinput3.get() != '') and ((TELinput3.get()).isdigit() == False) :
             tel = 'trash'
+
 
         if name == '':
             nameresultlist = [None]
@@ -463,6 +465,7 @@ def member_search_fix():
             else:
                 tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
 
+
         if (TELinput1.get() != '') and ((TELinput1.get()).isdigit() == False) :
             tel = 'trash'
 
@@ -471,6 +474,7 @@ def member_search_fix():
 
         elif (TELinput3.get() != '') and ((TELinput3.get()).isdigit() == False) :
             tel = 'trash'
+
 
         if name == '':
             nameresultlist = [None]
@@ -578,7 +582,9 @@ def member_search_fix():
                                 messagebox.showinfo("회원정보 수정 실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
                                 num = False
                             elif (infonameinput.get()).isdigit():
+
                                 messagebox.showinfo("회원정보 수정 실패", "회원명은 문자를 포함해야 합니다.")
+
                                 num = False
 
                             if num == True:
@@ -617,7 +623,9 @@ def member_search_fix():
                         int(infodateinput.get())
 
                         if len(infodateinput.get()) != 8:
+
                             messagebox.showinfo("회원정보 수정 실패", "생년월일은 8자리로 입력해야 합니다.(YYYYMMDD)")
+
                             num = False
 
                         if num == True:
@@ -651,8 +659,10 @@ def member_search_fix():
                 elif TELinput3.get() == '':
                     tel = TELinput2.get()
 
+
                 else:
                     tel = TELinput2.get() + '-' + TELinput3.get()
+
 
             elif TELinput2.get() == '':
                 if TELinput3.get() == '':
@@ -960,6 +970,7 @@ def member_search_del():
             else:
                 tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
 
+
         if (TELinput1.get() != '') and ((TELinput1.get()).isdigit() == False) :
             tel = 'trash'
 
@@ -1074,6 +1085,7 @@ def member_search_del():
 
                 else:
                     tel = TELinput1.get() + '-' + TELinput2.get() + '-' + TELinput3.get()
+
 
             if True in list(df_member['Member_NAME'].str.contains(name)) or True in list(
                     df_member['Member_TEL'].str.contains(tel)):
@@ -1478,4 +1490,6 @@ def deleted_member_search():
     TELinput2.place(x=170, y=60)
     TELinput3.place(x=220, y=60)
     searchbutton.place(x=350, y=20)
+
     treeview.place(x=25, y=150)
+
