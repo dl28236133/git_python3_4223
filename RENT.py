@@ -52,24 +52,27 @@ def clickRentUser():
             if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                     df_search['Member_BIRTHDATE'].iloc[i],
-                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             elif name == '':
                 df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                     df_search['Member_BIRTHDATE'].iloc[i],
-                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             else:
                 df_search = df_member.loc[
                     (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                     df_search['Member_BIRTHDATE'].iloc[i],
-                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
@@ -116,9 +119,10 @@ def clickRentUser():
 
     datalist = []
     for i in range(len(df_member.index)):
-        datalist.append(
-            [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
-             df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+        if (df_member['Member_DEL_MEM'].iloc[i] == False):
+            datalist.append(
+                [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
+                 df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
 
     for j in range(len(datalist)):
         treeview.insert('', 'end', values=datalist[j])
@@ -307,6 +311,7 @@ def clickRentBook():
     can = []
     df_book_can = df_book.loc[df_book['BOOK_RENT'] == False]
     for i in range(len(df_book_can.index)):
+
         can.append([df_book_can['BOOK_ISBN'].iloc[i], \
                     df_book_can['BOOK_TITLE'].iloc[i], \
                     df_book_can['BOOK_AUTHOR'].iloc[i], \
@@ -367,24 +372,27 @@ def clickReturnUser():
             if tel == '':
                 df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                     df_search['Member_BIRTHDATE'].iloc[i],
-                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             elif name == '':
                 df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                     df_search['Member_BIRTHDATE'].iloc[i],
-                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             else:
                 df_search = df_member.loc[
                     (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
                 for i in range(len(df_search.index)):
-                    datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                     df_search['Member_BIRTHDATE'].iloc[i],
-                                     df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                    if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                         df_search['Member_BIRTHDATE'].iloc[i],
+                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
@@ -435,9 +443,10 @@ def clickReturnUser():
 
     datalist = []
     for i in range(len(df_member.index)):
-        datalist.append(
-            [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
-             df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
+        if (df_member['Member_DEL_MEM'].iloc[i] == False):
+            datalist.append(
+                [df_member['Member_TEL'].iloc[i], df_member['Member_NAME'].iloc[i], df_member['Member_BIRTHDATE'].iloc[i],
+                 df_member['Member_GENDER'].iloc[i], df_member['Member_EMAIL'].iloc[i]])
 
     for j in range(len(datalist)):
         treeview.insert('', 'end', values=datalist[j])
@@ -480,6 +489,9 @@ def clickReturnBook():
         except:
             pass
 
+
+
+
     windowReturnBook = Tk()
     windowReturnBook.geometry("650x400")
     windowReturnBook.title("도서 반납")
@@ -517,7 +529,7 @@ def clickReturnBook():
     treeview.heading("4", text="반납예정일", anchor="center")
 
     treeview.column("#5", width=100, anchor="center")
-    treeview.heading("5", text="대여여부", anchor="center")
+    treeview.heading("5", text="반납여부", anchor="center")
 
     treeview.place(x=25, y=100)
     returnbutton.place(x=550, y=335)
@@ -534,12 +546,13 @@ def clickReturnBook():
     can = []
     df_rent_can = df_rent.loc[df_rent['USER_PHONE'] == Tel]
     for i in range(len(df_rent_can.index)):
-        can.append([ \
-                    df_rent_can['BOOK_ISBN'].iloc[i], \
-                    df_rent_can['BOOK_TITLE'].iloc[i], \
-                    df_rent_can['RENT_DATE'].iloc[i], \
-                    df_rent_can['RENT_RETURN_DATE'].iloc[i], \
-                    df_rent_can['RENT_YN'].iloc[i]])
+        if (df_rent_can['RENT_YN'].iloc[i] == True):
+            can.append([ \
+                        df_rent_can['BOOK_ISBN'].iloc[i], \
+                        df_rent_can['BOOK_TITLE'].iloc[i], \
+                        df_rent_can['RENT_DATE'].iloc[i], \
+                        df_rent_can['RENT_RETURN_DATE'].iloc[i], \
+                        df_rent_can['RENT_YN'].iloc[i]])
 
     for i in range(len(can)):
         treeview.insert('', 'end', values=can[i])

@@ -1,5 +1,5 @@
 ﻿BOOK_ISBN,BOOK_TITLE,BOOK_AUTHOR,BOOK_PUB,BOOK_PRICE,BOOK_LINK,BOOK_IMAGE,BOOK_EX,BOOK_RENT
-99988877766,C언어스케치,저자누구,어디지,20000,http:xxxx,image/2.jpg,x,True
+99988877766,C언어스케치,저자누구,어디지,20000,http:xxxx,image/2.jpg,x,False
 3333333333,실험2,실험2,실험2,10000,http:,image/5.png,x,False
 8512798561,실험3,실험3,실험3,1,http,image/1.jpg,x,False
 28236133,대여실험,대여실험,대여실험,20000,http,,대여실험,False

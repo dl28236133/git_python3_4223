@@ -1054,24 +1054,27 @@ def member_search_del():
                 if tel == '':
                     df_search = df_member.loc[df_member['Member_NAME'].str.contains(name)]
                     for i in range(len(df_search.index)):
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                         df_search['Member_BIRTHDATE'].iloc[i],
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                        if (df_search['Member_DEL_MEM'].iloc[i]  == False ):
+                            datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                             df_search['Member_BIRTHDATE'].iloc[i],
+                                             df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
                 elif name == '':
                     df_search = df_member.loc[df_member['Member_TEL'].str.contains(tel)]
                     for i in range(len(df_search.index)):
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                         df_search['Member_BIRTHDATE'].iloc[i],
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                        if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                            datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                             df_search['Member_BIRTHDATE'].iloc[i],
+                                             df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
                 else:
                     df_search = df_member.loc[
                         (df_member['Member_TEL'].str.contains(tel)) & (df_member['Member_NAME'].str.contains(name))]
                     for i in range(len(df_search.index)):
-                        datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
-                                         df_search['Member_BIRTHDATE'].iloc[i],
-                                         df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
+                        if (df_search['Member_DEL_MEM'].iloc[i] == False):
+                            datalist.append([df_search['Member_TEL'].iloc[i], df_search['Member_NAME'].iloc[i],
+                                             df_search['Member_BIRTHDATE'].iloc[i],
+                                             df_search['Member_GENDER'].iloc[i], df_search['Member_EMAIL'].iloc[i]])
 
             for j in range(len(datalist)):
                 treeview.insert('', 'end', values=datalist[j])
