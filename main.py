@@ -16,13 +16,9 @@ def main_UI():
     memberMenu = Menu(mainMenu)
     mainMenu.add_cascade(label = "회원관리", menu = memberMenu)
     memberMenu.add_command(label="회원정보", command=member_search)
-    memberMenu.add_separator()
     memberMenu.add_command(label="회원등록", command=member_register)
-    memberMenu.add_separator()
     memberMenu.add_command(label="회원정보수정", command=member_search_fix)
-    memberMenu.add_separator()
     memberMenu.add_command(label="회원탈퇴", command = member_search_del)
-    memberMenu.add_separator()
     memberMenu.add_command(label="탈퇴회원확인", command = deleted_member_search)
 
     BookMenu = Menu(mainMenu)
@@ -39,7 +35,6 @@ def main_UI():
 
     SettingMenu = Menu(mainMenu)
     mainMenu.add_cascade(label='환경설정', menu=SettingMenu)
-    SettingMenu.add_command(label='실험', command=window.quit) # 나중에 지워야함
     SettingMenu.add_command(label='종료', command= window.quit)
 
     window.mainloop()

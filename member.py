@@ -773,7 +773,9 @@ def member_search_del():
         if name == '' :
             nameresultlist = [None]
 
-        else :
+
+
+        else:
             df_search = df_member[df_member['Member_NAME'].str.contains(name)]
             nameresultlist = list(df_search['Member_NAME'])
 
