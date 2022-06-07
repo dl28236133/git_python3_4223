@@ -102,6 +102,7 @@ def Book_add():
 
                 df_book.to_csv('Book.csv', index=False, encoding='utf-8-sig')
                 messagebox.showinfo('등록성공' , '도서 등록이 완료되었습니다.')
+                newWindow.destroy()
 
 
     newWindow = Tk()
